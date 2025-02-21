@@ -95,7 +95,7 @@ class MainActivity : ComponentActivity() {
 
                             }
                             composable(Screen.PatientDashboard.route) {
-                                PatientDashboardScreen(navController)
+                                PatientDashboardScreen(navController, viewModel)
                             }
                             composable(Screen.SignInScreen.route) {
                                 val launcher =
@@ -134,7 +134,7 @@ class MainActivity : ComponentActivity() {
                                         }
                                     }
                                 }
-                                SignInScreenUI(onSignInClick = {
+                                SignInScreenUI(navController, onSignInClick = {
                                     lifecycleScope.launch {
                                         val signInSender = googleAuthUiClient.signIn()
                                         launcher.launch(

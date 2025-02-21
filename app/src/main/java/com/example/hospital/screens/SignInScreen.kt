@@ -28,14 +28,16 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.hospital.R
 
 //@Preview(showSystemUi = true)
 @Composable
 fun SignInScreenUI(
+    navController: NavController,
     onSignInClick:() -> Unit
 ) {
-
     val brush = Brush.linearGradient(
         listOf(
             Color(0xFF238CDD), Color(0xFF255DCC)
@@ -93,6 +95,32 @@ fun SignInScreenUI(
                 modifier = Modifier.scale(1.1f)
             )
         }
-    }
 
+        Spacer(modifier = Modifier.padding(20.dp))
+
+        Button(
+            onClick = {navController.navigate("admin_screen") },
+            modifier = Modifier
+                .background(brush, CircleShape)
+                .fillMaxWidth(0.4F)
+                .height(60.dp),
+            colors = ButtonDefaults.buttonColors(Color.Transparent),
+            shape = CircleShape
+        ) {
+            Text(
+                text = "Admin",
+                modifier = Modifier.padding(end = 20.dp),
+                color = Color.White,
+                fontSize = 18.sp,
+                fontWeight = FontWeight.SemiBold
+            )
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun SignInPreview(){
+    val navController = rememberNavController()
+    SignInScreenUI(navController,{})
 }

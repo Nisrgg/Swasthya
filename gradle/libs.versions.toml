@@ -30,6 +30,7 @@ recyclerview = "1.4.0"
 material = "1.12.0"
 composeMaterial = "1.4.1"
 firebaseFirestoreKtx = "25.1.2"
+datastoreCoreAndroid = "1.1.2"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -68,6 +69,7 @@ androidx-recyclerview = { group = "androidx.recyclerview", name = "recyclerview"
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 androidx-compose-material = { group = "androidx.wear.compose", name = "compose-material", version.ref = "composeMaterial" }
 firebase-firestore-ktx = { group = "com.google.firebase", name = "firebase-firestore-ktx", version.ref = "firebaseFirestoreKtx" }
+androidx-datastore-core-android = { group = "androidx.datastore", name = "datastore-core-android", version.ref = "datastoreCoreAndroid" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

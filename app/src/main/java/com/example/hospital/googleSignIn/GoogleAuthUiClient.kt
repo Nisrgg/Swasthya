@@ -2,11 +2,15 @@ package com.example.hospital.googleSignIn
 import android.content.Context
 import android.content.Intent
 import android.content.IntentSender
+import android.util.Log
+import android.widget.Toast
+import androidx.navigation.NavController
 import com.example.hospital.SignInResult
 import com.example.hospital.UserData
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.BeginSignInRequest.GoogleIdTokenRequestOptions
 import com.google.android.gms.auth.api.identity.SignInClient
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -82,4 +86,25 @@ class GoogleAuthUiClient(
             ppurl = photoUrl.toString()
         )
     }
+    suspend fun signOut(): Result<Unit> {
+        return try {
+            // Sign out from Firebase Auth
+            auth.signOut()
+
+            // Sign out from Google One Tap client
+            oneTapClient.signOut().await()
+
+            // Reset ViewModel state
+            viewModel.resetState()
+
+            Log.d("GoogleAuthUiClient", "User signed out successfully")
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Log.e("GoogleAuthUiClient", "Error during sign out: ${e.message}")
+            if (e is CancellationException) throw e
+            Result.failure(e)
+        }
+    }
+
 }
+

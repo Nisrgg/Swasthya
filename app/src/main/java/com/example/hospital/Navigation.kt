@@ -7,7 +7,7 @@ sealed class Screen(val route: String) {
     object SignInScreen : Screen("signin")
     object PatientDashboard : Screen("dashboard")
     object ChatBotScreen : Screen("chatbot")
-
+    object AdminScreen : Screen("admin_screen")
     // 🔧 Fixed: Removed `{doctorJson}` since the list does not need it
     object DoctorListScreen : Screen("doctor_list")
 
@@ -21,5 +21,6 @@ sealed class Screen(val route: String) {
 
     object AppointmentsScreen : Screen("user_appointments")
     object AddDoctorScreen : Screen("add_doctor")
+    object RemoveDoctorScreen : Screen("remove_doctor")
 }
 
