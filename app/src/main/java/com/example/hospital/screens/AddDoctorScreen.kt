@@ -48,4 +48,4 @@ fun AddDoctorScreen() {
             Text("Add Doctor")
         }
     }
-}
+} 

@@ -8,6 +8,4 @@ data class Appointment(
     val doctorName: String = "",
     val userName: String = "",
     val appointmentTime: Timestamp = Timestamp.now()
-) {
-    constructor() : this("", "", "", "", Timestamp.now()) // No-arg constructor for Firestore
-}
+)
