@@ -84,5 +84,9 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
 
+    implementation(libs.material3)
+    implementation(libs.ui.tooling.preview)
+    implementation(libs.accompanist.pager) // For Calendar
+
 
 }

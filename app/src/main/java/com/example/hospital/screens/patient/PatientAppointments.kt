@@ -1,4 +1,4 @@
-package com.example.hospital.screens
+package com.example.hospital.screens.patient
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -8,6 +8,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.hospital.data.models.Appointment
 import com.example.hospital.data.repositories.AppointmentRepository
+import com.example.hospital.utils.DateUtils
 import com.google.firebase.auth.FirebaseAuth
 import java.text.SimpleDateFormat
 import java.util.*
@@ -16,18 +17,22 @@ import java.util.*
 fun AppointmentsScreen() {
     val appointments = remember { mutableStateListOf<Appointment>() }
     val repository = AppointmentRepository()
+    val userId = FirebaseAuth.getInstance().currentUser?.uid  // Get logged-in user's ID
 
-    // Fetch appointments on screen load
-    LaunchedEffect(Unit) {
-        repository.getAppointments(
-            onSuccess = { fetchedAppointments ->
-                appointments.clear()
-                appointments.addAll(fetchedAppointments)
-            },
-            onFailure = { error ->
-                println("Error fetching appointments: ${error.message}")
-            }
-        )
+    // Fetch only the logged-in user's appointments
+    LaunchedEffect(userId) {
+        if (userId != null) {
+            repository.getAppointments(
+                userId = userId, // Pass the user ID
+                onSuccess = { fetchedAppointments ->
+                    appointments.clear()
+                    appointments.addAll(fetchedAppointments)
+                },
+                onFailure = { error ->
+                    println("Error fetching appointments: ${error.message}")
+                }
+            )
+        }
     }
 
     Surface(
@@ -40,7 +45,7 @@ fun AppointmentsScreen() {
                 .fillMaxWidth()
         ) {
             Text(
-                text = "Upcoming Appointments",
+                text = "My Appointments",
                 style = MaterialTheme.typography.headlineMedium,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.primary,
@@ -83,9 +88,12 @@ private fun AppointmentCard(appointment: Appointment) {
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            val dateText = appointment.appointmentTime?.toDate()?.let { date ->
-                SimpleDateFormat("EEEE, MMM dd 'at' hh:mm a", Locale.getDefault()).format(date)
-            } ?: "Invalid Date"
+//            val dateText = appointment.appointmentTime?.toDate()?.let { date ->
+//                SimpleDateFormat("EEEE, MMM dd 'at' hh:mm a", Locale.getDefault()).format(date)
+//            } ?: "Invalid Date"
+
+            val dateText = DateUtils.stamp(appointment.appointmentTime)
+
 
             Text(
                 text = dateText,

@@ -1,6 +1,4 @@
-package com.example.hospital
-
-import com.google.firebase.Timestamp
+package com.example.hospital.utils
 
 data class SignInResult(
     val data : UserData?,

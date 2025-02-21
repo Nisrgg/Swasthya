@@ -27,20 +27,22 @@ import androidx.navigation.compose.rememberNavController
 import com.example.hospital.chatBot.ChatBotViewModel
 import com.example.hospital.googleSignIn.AuthViewModel
 import com.example.hospital.googleSignIn.GoogleAuthUiClient
-import com.example.hospital.screens.AddDoctorScreen
-import com.example.hospital.screens.AppointmentsScreen
-import com.example.hospital.screens.BookAppointmentScreen
-import com.example.hospital.screens.ChatPage
-import com.example.hospital.screens.DoctorListScreen
+import com.example.hospital.screens.admin.AddDoctorScreen
+import com.example.hospital.screens.patient.AppointmentsScreen
+import com.example.hospital.screens.patient.BookAppointmentScreen
+import com.example.hospital.screens.chatbot.ChatPage
+import com.example.hospital.screens.patient.DoctorListScreen
 //import com.example.hospital.screens.EditProfileScreen
-import com.example.hospital.screens.PatientDashboardScreen
-import com.example.hospital.screens.ProfileScreen
-import com.example.hospital.screens.SignInScreenUI
+import com.example.hospital.screens.patient.PatientDashboardScreen
+import com.example.hospital.screens.patient.ProfileScreen
+import com.example.hospital.screens.auth.SignInScreenUI
 import com.example.hospital.ui.theme.HospitalTheme
 import com.google.android.gms.auth.api.identity.Identity
 import kotlinx.coroutines.launch
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.hospital.data.viewmodels.ProfileViewModel
+import com.example.hospital.screens.admin.AdminScreen
+import com.example.hospital.screens.admin.RemoveDoctorScreen
 
 
 class MainActivity : ComponentActivity() {
@@ -159,8 +161,16 @@ class MainActivity : ComponentActivity() {
                                 BookAppointmentScreen(navController, doctorJson)
                             }
 
+                            composable(Screen.AdminScreen.route){
+                                AdminScreen(navController)
+                            }
+
+                            composable(Screen.RemoveDoctorScreen.route){
+                                RemoveDoctorScreen()
+                            }
+
                             composable(Screen.AddDoctorScreen.route) {
-                                AddDoctorScreen()
+                                AddDoctorScreen(navController)
                             }
 
                             composable(Screen.AppointmentsScreen.route) {

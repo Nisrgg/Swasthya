@@ -6,14 +6,20 @@ import com.google.firebase.firestore.FirebaseFirestore
 class DoctorRepository {
     private val db = FirebaseFirestore.getInstance()
 
-    fun addDoctor(name: String, specialization: String, availableSlots: List<String>, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
+    fun addDoctor(
+        name: String,
+        specialization: String,
+        availableSlots: Map<String, List<String>>, // ✅ Accepts date-wise slots
+        onSuccess: () -> Unit,
+        onFailure: (Exception) -> Unit
+    ) {
         val newDoctorRef = db.collection("doctors").document()
 
         val doctor = Doctor(
             id = newDoctorRef.id,
             name = name,
             specialization = specialization,
-            availableSlots = availableSlots
+            availableSlots = availableSlots // ✅ Stores in Firestore
         )
 
         newDoctorRef.set(doctor)
@@ -21,12 +27,23 @@ class DoctorRepository {
             .addOnFailureListener { onFailure(it) }
     }
 
-    fun getDoctors(onResult: (List<Doctor>) -> Unit, onFailure: (Exception) -> Unit) {
-        db.collection("doctors").get()
-            .addOnSuccessListener { snapshot ->
-                val doctors = snapshot.toObjects(Doctor::class.java)
-                onResult(doctors)
-            }
+    fun removeDoctor(doctorId: String, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
+        db.collection("doctors").document(doctorId)
+            .delete()
+            .addOnSuccessListener { onSuccess() }
             .addOnFailureListener { onFailure(it) }
     }
+
+    fun getDoctors(onSuccess: (List<Doctor>) -> Unit, onFailure: (Exception) -> Unit) {
+        db.collection("doctors")
+            .get()
+            .addOnSuccessListener { documents ->
+                val doctors = documents.mapNotNull { it.toObject(Doctor::class.java) }
+                onSuccess(doctors)
+            }
+            .addOnFailureListener { exception ->
+                onFailure(exception)
+            }
+    }
+
 }

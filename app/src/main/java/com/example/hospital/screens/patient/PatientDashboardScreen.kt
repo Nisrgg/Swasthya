@@ -1,4 +1,4 @@
-package com.example.hospital.screens
+package com.example.hospital.screens.patient
 
 import android.content.Context
 import android.util.Log

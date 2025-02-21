@@ -6,6 +6,7 @@ data class Appointment(
     val id: String = "",
     val doctorId: String = "",
     val doctorName: String = "",
+    val userId: String = "",  // ✅ Add this field
     val userName: String = "",
-    val appointmentTime: Timestamp = Timestamp.now()
+    val appointmentTime: Timestamp? = null
 )

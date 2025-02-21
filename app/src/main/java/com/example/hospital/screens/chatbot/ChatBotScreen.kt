@@ -1,4 +1,4 @@
-package com.example.hospital.screens
+package com.example.hospital.screens.chatbot
 
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -35,7 +35,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.hospital.MessageModel
+import com.example.hospital.utils.MessageModel
 import com.example.hospital.R
 import com.example.hospital.chatBot.ChatBotViewModel
 import com.example.hospital.ui.theme.ColorModelMessage

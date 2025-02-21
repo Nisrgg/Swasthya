@@ -1,4 +1,4 @@
-package com.example.hospital.screens
+package com.example.hospital.screens.admin
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

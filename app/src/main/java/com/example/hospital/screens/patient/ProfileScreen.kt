@@ -1,4 +1,4 @@
-package com.example.hospital.screens
+package com.example.hospital.screens.patient
 
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -13,15 +13,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.example.hospital.data.models.UserProfile
 import com.example.hospital.data.viewmodels.ProfileViewModel
-import com.google.firebase.Firebase
-import com.google.firebase.auth.auth
-import com.google.firebase.firestore.firestore
-import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
 import java.time.*
 import java.time.format.DateTimeFormatter
 
