@@ -28,8 +28,8 @@ fun BookAppointmentScreen(
 ) {
     val db = FirebaseFirestore.getInstance()
     var doctor by remember { mutableStateOf<Doctor?>(null) }
-    var selectedDate by remember { mutableStateOf<String?>(null) } // 📅 Selected Date
-    var availableSlots by remember { mutableStateOf<List<String>>(emptyList()) } // ⏰ Slots for Date
+    var selectedDate by remember { mutableStateOf<String?>(null) }
+    var availableSlots by remember { mutableStateOf<List<String>>(emptyList()) }
     var selectedSlot by remember { mutableStateOf<String?>(null) }
 
     val auth = FirebaseAuth.getInstance()
@@ -49,33 +49,32 @@ fun BookAppointmentScreen(
         selectedDate = selectedDate,
         onDateSelected = { date ->
             selectedDate = date
-            availableSlots = doctor?.availableSlots?.get(date) ?: emptyList() // ✅ Fetch slots for selected date
+            availableSlots = doctor?.availableSlots?.get(date) ?: emptyList()
         },
         availableSlots = availableSlots,
         selectedSlot = selectedSlot,
         onSlotSelected = { selectedSlot = it },
         onConfirmAppointment = {
-            val userId = FirebaseAuth.getInstance().currentUser?.uid  // ✅ Get the logged-in user's ID
+            val userId = FirebaseAuth.getInstance().currentUser ?.uid
 
             selectedSlot?.let { time ->
-                val selectedTimestamp = convertSlotToTimestamp(selectedDate, time)  // ✅ Convert date+time to Timestamp
+                val selectedTimestamp = convertSlotToTimestamp(selectedDate, time)
 
-                if (userId != null) {  // ✅ Ensure user is logged in
+                if (userId != null) {
                     appointmentRepository.bookAppointment(
                         doctorId = doctorId,
                         doctorName = doctor?.name ?: "",
-                        userId = userId,  // ✅ Pass userId here
+                        userId = userId,
                         userName = userName,
-                        appointmentTime = selectedTimestamp, // ✅ Use converted timestamp
+                        appointmentTime = selectedTimestamp,
                         onSuccess = { navController.popBackStack() },
                         onFailure = { e -> println("Error booking appointment: ${e.message}") }
                     )
                 } else {
-                    println("Error: User not logged in")  // Debugging log
+                    println("Error: User not logged in")
                 }
             }
         }
-
     )
 }
 
@@ -99,12 +98,12 @@ private fun BookAppointmentContent(
             )
             Spacer(modifier = Modifier.height(16.dp))
 
-            // 📅 Date Picker
+            // Date Picker
             DatePicker(onDateSelected = onDateSelected)
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // ⏰ Time Slot Selection
+            // Time Slot Selection
             if (availableSlots.isNotEmpty()) {
                 LazyColumn {
                     items(availableSlots.size) { index ->
@@ -156,7 +155,7 @@ private fun BookAppointmentContent(
     )
 }
 
-// 📅 Date Picker Composable
+// Date Picker Composable
 @Composable
 fun DatePicker(onDateSelected: (String) -> Unit) {
     val context = LocalContext.current
@@ -167,7 +166,7 @@ fun DatePicker(onDateSelected: (String) -> Unit) {
             context,
             { _, year, month, dayOfMonth ->
                 val selectedDate = String.format("%04d-%02d-%02d", year, month + 1, dayOfMonth)
-                onDateSelected(selectedDate) // ✅ Set selected date
+                onDateSelected(selectedDate)
             },
             calendar.get(Calendar.YEAR),
             calendar.get(Calendar.MONTH),
@@ -178,15 +177,15 @@ fun DatePicker(onDateSelected: (String) -> Unit) {
     }
 }
 
-// ✅ Convert Date + Time to Timestamp
+// Convert Date + Time to Timestamp
 fun convertSlotToTimestamp(date: String?, time: String): Timestamp {
     if (date == null) throw IllegalArgumentException("Date cannot be null")
 
-    val dateTimeString = "$date $time" // e.g., "2025-02-22 9:00 AM"
+    val dateTimeString = "$date $time"
     val dateTimeFormat = SimpleDateFormat("yyyy-MM-dd h:mm a", Locale.US)
     val dateObj = dateTimeFormat.parse(dateTimeString)!!
 
-    return Timestamp(dateObj) // ✅ Convert to Firebase Timestamp
+    return Timestamp(dateObj)
 }
 
 @Preview(showBackground = true)

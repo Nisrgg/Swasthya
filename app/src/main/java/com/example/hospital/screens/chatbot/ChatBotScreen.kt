@@ -3,14 +3,7 @@ package com.example.hospital.screens.chatbot
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -33,6 +26,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.hospital.utils.MessageModel
@@ -40,11 +34,12 @@ import com.example.hospital.R
 import com.example.hospital.chatBot.ChatBotViewModel
 import com.example.hospital.ui.theme.ColorModelMessage
 import com.example.hospital.ui.theme.ColorUserMessage
+import com.example.hospital.ui.theme.HospitalTheme
 import com.example.hospital.ui.theme.Purple80
 
 @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
 @Composable
-fun ChatPage(modifier: Modifier = Modifier,viewModel: ChatBotViewModel) {
+fun ChatPage(modifier: Modifier = Modifier, viewModel: ChatBotViewModel) {
     Column(
         modifier = modifier
     ) {
@@ -61,10 +56,9 @@ fun ChatPage(modifier: Modifier = Modifier,viewModel: ChatBotViewModel) {
     }
 }
 
-
 @Composable
-fun MessageList(modifier: Modifier = Modifier,messageList : List<MessageModel>) {
-    if(messageList.isEmpty()){
+fun MessageList(modifier: Modifier = Modifier, messageList: List<MessageModel>) {
+    if (messageList.isEmpty()) {
         Column(
             modifier = modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -76,34 +70,31 @@ fun MessageList(modifier: Modifier = Modifier,messageList : List<MessageModel>) 
                 contentDescription = "Icon",
                 tint = Purple80,
             )
-            Text(text = "Ask me anything", fontSize = 22.sp)
+            Text(text = "Ask me anything", fontSize = 22.sp, fontWeight = FontWeight.Bold)
         }
-    }else{
+    } else {
         LazyColumn(
             modifier = modifier,
             reverseLayout = true
         ) {
-            items(messageList.reversed()){
+            items(messageList.reversed()) {
                 MessageRow(messageModel = it)
             }
         }
     }
-
-
 }
 
 @Composable
 fun MessageRow(messageModel: MessageModel) {
-    val isModel = messageModel.role=="model"
+    val isModel = messageModel.role == "model"
 
     Row(
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.padding(vertical = 4.dp) // Add vertical padding for better spacing
     ) {
-
         Box(
             modifier = Modifier.fillMaxWidth()
         ) {
-
             Box(
                 modifier = Modifier
                     .align(if (isModel) Alignment.BottomStart else Alignment.BottomEnd)
@@ -113,11 +104,10 @@ fun MessageRow(messageModel: MessageModel) {
                         top = 8.dp,
                         bottom = 8.dp
                     )
-                    .clip(RoundedCornerShape(48f))
+                    .clip(RoundedCornerShape(16.dp)) // Use smaller corner radius for a modern look
                     .background(if (isModel) ColorModelMessage else ColorUserMessage)
                     .padding(16.dp)
             ) {
-
                 SelectionContainer {
                     Text(
                         text = messageModel.message,
@@ -125,26 +115,14 @@ fun MessageRow(messageModel: MessageModel) {
                         color = Color.White
                     )
                 }
-
-
             }
-
         }
-
-
     }
-
-
 }
 
-
-
 @Composable
-fun MessageInput(onMessageSend : (String)-> Unit) {
-
-    var message by remember {
-        mutableStateOf("")
-    }
+fun MessageInput(onMessageSend: (String) -> Unit) {
+    var message by remember { mutableStateOf("") }
 
     Row(
         modifier = Modifier.padding(8.dp),
@@ -155,18 +133,20 @@ fun MessageInput(onMessageSend : (String)-> Unit) {
             value = message,
             onValueChange = {
                 message = it
-            }
+            },
+            placeholder = { Text(text = "Type your message...", color = Color.Gray) }, // Placeholder text
+            shape = RoundedCornerShape(20.dp) // Rounded corners for the text field
         )
         IconButton(onClick = {
-            if(message.isNotEmpty()){
+            if (message.isNotEmpty()) {
                 onMessageSend(message)
                 message = ""
             }
-
         }) {
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.Send,
-                contentDescription = "Send"
+                contentDescription = "Send",
+                tint = MaterialTheme.colorScheme.primary // Use theme color for the icon
             )
         }
     }
@@ -183,7 +163,26 @@ fun AppHeader() {
             modifier = Modifier.padding(16.dp),
             text = "Health",
             color = Color.White,
-            fontSize = 22.sp
+            fontSize = 22.sp,
+            fontWeight = FontWeight.Bold // Make the header text bold
         )
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
+@Preview(showBackground = true)
+@Composable
+fun ChatPagePreview() {
+    // Create a mock ViewModel with sample data
+    val mockViewModel = ChatBotViewModel().apply {
+        // Add some sample messages to the message list
+        messageList.add(MessageModel(role = "user", message = "Hello! How can I help you?"))
+        messageList.add(MessageModel(role = "model", message = "I need assistance with my health records."))
+        messageList.add(MessageModel(role = "user", message = "What should I do next?"))
+    }
+
+    // Use the HospitalTheme to apply the theme
+    HospitalTheme {
+        ChatPage(viewModel = mockViewModel)
     }
 }

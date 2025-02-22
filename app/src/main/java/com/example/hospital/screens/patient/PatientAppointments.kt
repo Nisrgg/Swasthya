@@ -1,23 +1,28 @@
 package com.example.hospital.screens.patient
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.hospital.data.models.Appointment
 import com.example.hospital.data.repositories.AppointmentRepository
 import com.example.hospital.utils.DateUtils
 import com.google.firebase.auth.FirebaseAuth
-import java.text.SimpleDateFormat
-import java.util.*
 
 @Composable
 fun AppointmentsScreen() {
     val appointments = remember { mutableStateListOf<Appointment>() }
     val repository = AppointmentRepository()
-    val userId = FirebaseAuth.getInstance().currentUser?.uid  // Get logged-in user's ID
+    val userId = FirebaseAuth.getInstance().currentUser ?.uid  // Get logged-in user's ID
 
     // Fetch only the logged-in user's appointments
     LaunchedEffect(userId) {
@@ -43,6 +48,11 @@ fun AppointmentsScreen() {
             modifier = Modifier
                 .padding(16.dp)
                 .fillMaxWidth()
+                .background(
+                    brush = Brush.verticalGradient(
+                        colors = listOf(MaterialTheme.colorScheme.primaryContainer, MaterialTheme.colorScheme.background)
+                    )
+                )
         ) {
             Text(
                 text = "My Appointments",
@@ -71,29 +81,34 @@ private fun AppointmentCard(appointment: Appointment) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 8.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+            .padding(vertical = 8.dp)
+            .background(MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(12.dp)),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Column(
             modifier = Modifier
                 .padding(16.dp)
                 .fillMaxWidth()
         ) {
-            Text(
-                text = appointment.doctorName,
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary
-            )
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    imageVector = Icons.Default.CalendarToday,
+                    contentDescription = "Appointment Icon",
+                    modifier = Modifier.size(24.dp),
+                    tint = MaterialTheme.colorScheme.primary
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = appointment.doctorName,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.primary
+                )
+            }
 
             Spacer(modifier = Modifier.height(8.dp))
 
-//            val dateText = appointment.appointmentTime?.toDate()?.let { date ->
-//                SimpleDateFormat("EEEE, MMM dd 'at' hh:mm a", Locale.getDefault()).format(date)
-//            } ?: "Invalid Date"
-
             val dateText = DateUtils.stamp(appointment.appointmentTime)
-
 
             Text(
                 text = dateText,

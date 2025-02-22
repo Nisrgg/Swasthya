@@ -1,71 +1,121 @@
 package com.example.hospital.screens.admin
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
+import androidx.compose.animation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.example.hospital.data.models.Doctor
 import com.example.hospital.data.repositories.DoctorRepository
+import com.example.hospital.ui.theme.*
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RemoveDoctorScreen() {
-    val doctors = remember { mutableStateListOf<Doctor>() }
+    var doctors by remember { mutableStateOf<List<Doctor>>(emptyList()) }
+    var isLoading by remember { mutableStateOf(true) }
+    var error by remember { mutableStateOf<String?>(null) }
     val repository = DoctorRepository()
     val coroutineScope = rememberCoroutineScope()
 
-    // Fetch doctors when the screen loads
     LaunchedEffect(Unit) {
         repository.getDoctors(
             onSuccess = { fetchedDoctors ->
-                doctors.clear()
-                doctors.addAll(fetchedDoctors)
+                doctors = fetchedDoctors
+                isLoading = false
             },
-            onFailure = { error ->
-                println("Error fetching doctors: ${error.message}")
+            onFailure = { e ->
+                error = e.message
+                isLoading = false
             }
         )
     }
 
-    Surface(
-        modifier = Modifier.fillMaxSize(),
-        color = MaterialTheme.colorScheme.background
-    ) {
+    Scaffold(
+        topBar = {
+            LargeTopAppBar(
+                title = { Text("Remove Doctor") },
+                colors = TopAppBarDefaults.largeTopAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                )
+            )
+        }
+    ) { paddingValues ->
         Column(
             modifier = Modifier
-                .padding(16.dp)
-                .fillMaxWidth()
+                .fillMaxSize()
+                .padding(paddingValues)
+                .padding(horizontal = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Text(
-                text = "Remove Doctor",
-                style = MaterialTheme.typography.headlineMedium,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.padding(bottom = 16.dp)
-            )
-
-            if (doctors.isEmpty()) {
-                EmptyStateCard(message = "No doctors available", icon = "❌")
-            } else {
-                doctors.forEach { doctor ->
-                    DoctorCard(doctor = doctor, onDelete = { doctorId ->
-                        coroutineScope.launch {
-                            repository.removeDoctor(
-                                doctorId,
-                                onSuccess = { doctors.removeIf { it.id == doctorId } },
-                                onFailure = { e -> println("Error removing doctor: ${e.message}") }
+            AnimatedVisibility(
+                visible = error != null,
+                enter = fadeIn() + expandVertically(),
+                exit = fadeOut() + shrinkVertically()
+            ) {
+                error?.let {
+                    HospitalCard {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                Icons.Default.Error,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.error
+                            )
+                            Text(
+                                text = it,
+                                color = MaterialTheme.colorScheme.error,
+                                style = MaterialTheme.typography.bodyMedium
                             )
                         }
-                    })
+                    }
+                }
+            }
+
+            when {
+                isLoading -> {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator()
+                    }
+                }
+                doctors.isEmpty() -> {
+                    EmptyStateCard()
+                }
+                else -> {
+                    doctors.forEach { doctor ->
+                        DoctorCard(
+                            doctor = doctor,
+                            onDelete = { doctorId ->
+                                coroutineScope.launch {
+                                    repository.removeDoctor(
+                                        doctorId,
+                                        onSuccess = {
+                                            doctors = doctors.filter { it.id != doctorId }
+                                        },
+                                        onFailure = { e ->
+                                            error = e.message
+                                        }
+                                    )
+                                }
+                            }
+                        )
+                    }
                 }
             }
         }
@@ -74,61 +124,143 @@ fun RemoveDoctorScreen() {
 
 @Composable
 fun DoctorCard(doctor: Doctor, onDelete: (String) -> Unit) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 8.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
-    ) {
-        Row(
-            modifier = Modifier
-                .padding(16.dp)
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = doctor.name,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.primary
-                )
-                Text(
-                    text = doctor.specialization,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
+    var showConfirmDialog by remember { mutableStateOf(false) }
 
-            TextButton(
-                onClick = { onDelete(doctor.id) },
-                colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.error)
+    HospitalCard {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Text("Remove")
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = doctor.name,
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                    Text(
+                        text = doctor.specialization,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    doctor.availableSlots.takeIf { it.isNotEmpty() }?.let {
+                        Text(
+                            text = "${it.size} available time slots",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.secondary
+                        )
+                    }
+                }
+
+                TextButton(
+                    onClick = { showConfirmDialog = true },
+                    colors = ButtonDefaults.textButtonColors(
+                        contentColor = MaterialTheme.colorScheme.error
+                    )
+                ) {
+                    Icon(
+                        Icons.Default.Delete,
+                        contentDescription = null,
+                        modifier = Modifier.size(18.dp)
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text("Remove")
+                }
             }
         }
+    }
+
+    if (showConfirmDialog) {
+        AlertDialog(
+            onDismissRequest = { showConfirmDialog = false },
+            title = { Text("Remove Doctor") },
+            text = { Text("Are you sure you want to remove Dr. ${doctor.name}?") },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        onDelete(doctor.id)
+                        showConfirmDialog = false
+                    },
+                    colors = ButtonDefaults.textButtonColors(
+                        contentColor = MaterialTheme.colorScheme.error
+                    )
+                ) {
+                    Text("Remove")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showConfirmDialog = false }) {
+                    Text("Cancel")
+                }
+            }
+        )
     }
 }
 
 @Composable
-private fun EmptyStateCard(message: String, icon: String) {
-    Card(
+private fun EmptyStateCard() {
+    HospitalCard(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 8.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+            .padding(vertical = 8.dp)
     ) {
-        Row(
+        Column(
             modifier = Modifier
-                .padding(24.dp)
+                .padding(32.dp)
                 .fillMaxWidth(),
-            horizontalArrangement = Arrangement.Center
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
+            Icon(
+                Icons.Default.PersonOff,
+                contentDescription = null,
+                modifier = Modifier.size(48.dp),
+                tint = MaterialTheme.colorScheme.onSurfaceVariant
+            )
             Text(
-                text = "$icon  $message",
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                text = "No doctors available",
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                textAlign = TextAlign.Center
             )
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun RemoveDoctorScreenPreview() {
+    HospitalTheme {
+        RemoveDoctorScreen()
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun DoctorCardPreview() {
+    HospitalTheme {
+        DoctorCard(
+            doctor = Doctor(
+                id = "1",
+                name = "Dr. John Doe",
+                specialization = "Cardiologist",
+                availableSlots = mapOf(
+                    "2024-02-22" to listOf("9:00 AM", "10:00 AM")
+                )
+            ),
+            onDelete = {}
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun EmptyStateCardPreview() {
+    HospitalTheme {
+        EmptyStateCard()
     }
 }

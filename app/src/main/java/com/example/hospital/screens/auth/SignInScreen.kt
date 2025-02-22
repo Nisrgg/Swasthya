@@ -2,122 +2,136 @@ package com.example.hospital.screens.auth
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.scale
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.hospital.R
+import com.example.hospital.ui.theme.*
+import androidx.compose.material3.*
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.text.font.FontWeight
 
-//@Preview(showSystemUi = true)
 @Composable
 fun SignInScreenUI(
     navController: NavController,
-    onSignInClick:() -> Unit
+    onSignInClick: () -> Unit
 ) {
-    val brush = Brush.linearGradient(
-        listOf(
-            Color(0xFF238CDD), Color(0xFF255DCC)
+    val gradientBrush = Brush.verticalGradient(
+        colors = listOf(
+            md_theme_light_primary,
+            md_theme_light_secondary
         )
     )
 
-    Image(
-        painter = painterResource(id = R.drawable.login_blur),
-        contentDescription = null,
-        modifier = Modifier.fillMaxSize(),
-        contentScale = ContentScale.Crop
-    )
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Spacer(modifier = Modifier.height(80.dp))
-
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(gradientBrush) // Use gradient background
+            .systemBarsPadding()
+    ) {
+        // Background Image
         Image(
-            painter = painterResource(id = R.drawable.oig4__rndcloiljdx4hxpn),
-            contentDescription = null
+            painter = painterResource(id = R.drawable.login_blur),
+            contentDescription = null,
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.Crop,
+            alpha = 0.3f // Make the background image less prominent
         )
 
-        Text(
-            text = "Chat App",
-            style = MaterialTheme.typography.displayMedium.copy(fontWeight = FontWeight.ExtraBold),
-            color = Color(0xFF101010)
-        )
-
-//        Text(
-//            text = "For all the yappers out there :)",
-//            style = MaterialTheme.typography.titleMedium,
-//            textAlign = TextAlign.Center,
-//            color = Color(0xFF101010)
-//        )
-//
-//        Spacer(modifier = Modifier.height(70.dp))
-
-        Button(
-            onClick = { onSignInClick() },
+        // Content
+        Column(
             modifier = Modifier
-                .background(brush, CircleShape)
-                .fillMaxWidth(.7f)
-                .height(60.dp),
-            colors = ButtonDefaults.buttonColors(Color.Transparent),
-            shape = CircleShape
+                .fillMaxSize()
+                .padding(24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(
-                text = "Continue with Google",
-                modifier = Modifier.padding(end = 20.dp),
-                color = Color.White,
-                fontSize = 18.sp,
-                fontWeight = FontWeight.SemiBold
-            )
-            Image(
-                painter = painterResource(id = R.drawable.goog_0ed88f7c),
-                contentDescription = null,
-                modifier = Modifier.scale(1.1f)
-            )
-        }
+            Spacer(modifier = Modifier.height(48.dp))
 
-        Spacer(modifier = Modifier.padding(20.dp))
+            // Logo Section
+            HospitalCard(
+                modifier = Modifier
+                    .size(120.dp)
+                    .clip(MaterialTheme.shapes.large)
+                    .shadow(8.dp, MaterialTheme.shapes.large) // Add shadow for depth
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.oig4__rndcloiljdx4hxpn),
+                    contentDescription = "App Logo",
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Crop
+                )
+            }
 
-        Button(
-            onClick = {navController.navigate("admin_screen") },
-            modifier = Modifier
-                .background(brush, CircleShape)
-                .fillMaxWidth(0.4F)
-                .height(60.dp),
-            colors = ButtonDefaults.buttonColors(Color.Transparent),
-            shape = CircleShape
-        ) {
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Title Section
             Text(
-                text = "Admin",
-                modifier = Modifier.padding(end = 20.dp),
-                color = Color.White,
-                fontSize = 18.sp,
-                fontWeight = FontWeight.SemiBold
+                text = "Swasthya",
+                style = MaterialTheme.typography.displayMedium.copy(fontWeight = FontWeight.Bold),
+                color = MaterialTheme.colorScheme.onBackground
             )
+
+            Text(
+                text = "Connect securely with your healthcare team",
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(top = 8.dp)
+            )
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            // Buttons Section
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                modifier = Modifier.padding(bottom = 32.dp)
+            ) {
+                // Google Sign In Button
+                PrimaryButton(
+                    text = "Continue with Google",
+                    onClick = onSignInClick,
+                    modifier = Modifier.fillMaxWidth(),
+                )
+
+                // Admin Button
+                Button(
+                    onClick = { navController.navigate("admin_screen") },
+                    modifier = Modifier
+                        .fillMaxWidth(0.3f)
+                        .height(48.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                        contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+                    ),
+                    shape = MaterialTheme.shapes.medium,
+                    elevation = ButtonDefaults.buttonElevation(defaultElevation = 4.dp) // Add elevation
+                ) {
+                    Text(
+                        text = "Admin",
+                        style = MaterialTheme.typography.labelLarge
+                    )
+                }
+            }
         }
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-fun SignInPreview(){
-    val navController = rememberNavController()
-    SignInScreenUI(navController,{})
+fun SignInPreview() {
+    HospitalTheme {
+        val navController = rememberNavController()
+        SignInScreenUI(navController, {})
+    }
 }

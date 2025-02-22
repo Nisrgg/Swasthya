@@ -6,18 +6,22 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.hospital.data.models.UserProfile
 import com.example.hospital.data.viewmodels.ProfileViewModel
 import java.time.*
 import java.time.format.DateTimeFormatter
-
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextFieldDefaults
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -40,6 +44,15 @@ fun ProfileScreen(
     var bloodGroup by remember { mutableStateOf("") }
     var emergencyContact by remember { mutableStateOf("") }
     var medicalConditions by remember { mutableStateOf("") }
+
+    val colors = OutlinedTextFieldDefaults.colors(
+        focusedTextColor = MaterialTheme.colorScheme.onSurface,
+        unfocusedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
+        focusedBorderColor = MaterialTheme.colorScheme.primary,
+        unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+        focusedLabelColor = MaterialTheme.colorScheme.primary,
+        unfocusedLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
+    )
 
     // Update local state when profile loaded
     LaunchedEffect(profile) {
@@ -64,7 +77,7 @@ fun ProfileScreen(
                 title = { Text("Profile") },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.Default.ArrowBack, "Back")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back")
                     }
                 },
                 actions = {
@@ -99,7 +112,9 @@ fun ProfileScreen(
                         onValueChange = { fullName = it },
                         label = { Text("Full Name") },
                         enabled = isEditMode,
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = colors
+
                     )
                 }
 
@@ -117,7 +132,8 @@ fun ProfileScreen(
                                     Icon(Icons.Default.DateRange, "Select Date")
                                 }
                             }
-                        }
+                        },
+                        colors = colors
                     )
                 }
 
@@ -141,7 +157,8 @@ fun ProfileScreen(
                                 if (isEditMode) {
                                     ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
                                 }
-                            }
+                            },
+                            colors = colors
                         )
 
                         if (isEditMode) {
@@ -171,7 +188,8 @@ fun ProfileScreen(
                         label = { Text("Phone Number") },
                         enabled = isEditMode,
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = colors
                     )
                 }
 
@@ -182,7 +200,8 @@ fun ProfileScreen(
                         label = { Text("Email") },
                         enabled = isEditMode,
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = colors
                     )
                 }
 
@@ -192,7 +211,8 @@ fun ProfileScreen(
                         onValueChange = { address = it },
                         label = { Text("Address") },
                         enabled = isEditMode,
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = colors
                     )
                 }
 
@@ -216,7 +236,8 @@ fun ProfileScreen(
                                 if (isEditMode) {
                                     ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
                                 }
-                            }
+                            },
+                            colors = colors
                         )
 
                         if (isEditMode) {
@@ -245,7 +266,8 @@ fun ProfileScreen(
                         label = { Text("Emergency Contact") },
                         enabled = isEditMode,
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = colors
                     )
                 }
 
@@ -256,7 +278,8 @@ fun ProfileScreen(
                         label = { Text("Medical Conditions") },
                         enabled = isEditMode,
                         modifier = Modifier.fillMaxWidth(),
-                        minLines = 3
+                        minLines = 3,
+                        colors = colors
                     )
                 }
 
@@ -320,3 +343,27 @@ fun ProfileScreen(
         }
     }
 }
+
+//@RequiresApi(Build.VERSION_CODES.O)
+//@Preview(showBackground = true)
+//@Composable
+//fun ProfileScreenPreview() {
+//    // Create a mock ProfileViewModel for the preview
+//    val mockViewModel = ProfileViewModel().apply {
+//        // Set up a mock profile
+//        profile.value = UserProfile(
+//            userId = "1",
+//            fullName = "John Doe",
+//            dateOfBirth = "01/01/1990",
+//            gender = "Male",
+//            phoneNumber = "1234567890",
+//            email = "john.doe@example.com",
+//            address = "123 Main St",
+//            bloodGroup = "O+",
+//            emergencyContact = "0987654321",
+//            medicalConditions = "None"
+//        )
+//    }
+//
+//    ProfileScreen(viewModel = mockViewModel, onNavigateBack = {})
+//}
