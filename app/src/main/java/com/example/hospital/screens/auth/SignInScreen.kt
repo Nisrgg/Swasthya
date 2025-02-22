@@ -65,7 +65,7 @@ fun SignInScreenUI(
                     .shadow(8.dp, MaterialTheme.shapes.large) // Add shadow for depth
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.oig4__rndcloiljdx4hxpn),
+                    painter = painterResource(id = R.drawable.ic_hospital_logo),
                     contentDescription = "App Logo",
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Crop

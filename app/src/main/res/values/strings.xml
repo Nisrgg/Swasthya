@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Hospital</string>
+    <string name="app_name">Swasthya</string>
 
     <string name="dr_filter_title">Filter</string>
     <string name="dr_search_title">Search</string>
