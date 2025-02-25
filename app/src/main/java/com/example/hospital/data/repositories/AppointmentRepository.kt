@@ -61,4 +61,26 @@ class AppointmentRepository {
                 onFailure(exception)
             }
     }
+    fun getAllAppointments(
+        onSuccess: (List<Appointment>) -> Unit,
+        onFailure: (Exception) -> Unit
+    ) {
+        FirebaseUtils.db.collection("appointments")
+            .get()
+            .addOnSuccessListener { documents ->
+                if (documents.isEmpty) {
+                    println("⚠️ No appointments found")
+                } else {
+                    println("✅ All appointments fetched")
+                    documents.forEach { println(it.data) }
+                }
+
+                val appointments = documents.mapNotNull { it.toObject(Appointment::class.java) }
+                onSuccess(appointments)
+            }
+            .addOnFailureListener { exception ->
+                println("❌ Error fetching appointments: ${exception.message}")
+                onFailure(exception)
+            }
+    }
 }

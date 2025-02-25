@@ -42,6 +42,7 @@ import kotlinx.coroutines.launch
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.hospital.data.viewmodels.ProfileViewModel
 import com.example.hospital.screens.admin.AdminScreen
+import com.example.hospital.screens.admin.AllAppointmentsScreen
 import com.example.hospital.screens.admin.RemoveDoctorScreen
 
 
@@ -173,6 +174,10 @@ class MainActivity : ComponentActivity() {
                                 AddDoctorScreen(navController)
                             }
 
+                            composable(Screen.AllAppointmentsScreen.route) {
+                                AllAppointmentsScreen()
+                            }
+
                             composable(Screen.AppointmentsScreen.route) {
                                 AppointmentsScreen()  // Pass if needed
                             }
@@ -188,8 +193,6 @@ class MainActivity : ComponentActivity() {
 
                         }
                     }
-
-
                 }
             }
 

@@ -13,6 +13,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.hospital.screens.patient.DoctorListScreen
 import com.example.hospital.ui.theme.*
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -85,14 +86,14 @@ fun AdminScreen(navController: NavController) {
                         QuickActionButton(
                             icon = Icons.Default.Person,
                             text = "View All Doctors",
-                            onClick = { /* TODO */ },
+                            onClick = { navController.navigate("doctor_list") },
                             modifier = Modifier.weight(1f)
                         )
 
                         QuickActionButton(
                             icon = Icons.Default.Add,
                             text = "View Appointments",
-                            onClick = { /* TODO */ },
+                            onClick = { navController.navigate("all_appointments") },
                             modifier = Modifier.weight(1f)
                         )
                     }
