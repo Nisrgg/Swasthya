@@ -82,7 +82,7 @@ fun SignInScreenUI(
             )
 
             Text(
-                text = "Connect securely with your healthcare team",
+                text = "Connect securely with your Healthcare Team",
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 textAlign = TextAlign.Center,
@@ -110,16 +110,16 @@ fun SignInScreenUI(
                     modifier = Modifier
                         .fillMaxWidth(0.3f)
                         .height(48.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                        contentColor = MaterialTheme.colorScheme.onSecondaryContainer
-                    ),
-                    shape = MaterialTheme.shapes.medium,
-                    elevation = ButtonDefaults.buttonElevation(defaultElevation = 4.dp) // Add elevation
+//                    colors = ButtonDefaults.buttonColors(
+//                        containerColor = MaterialTheme.colorScheme.onTertiaryContainer,
+//                        contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+//                    ),
+//                    shape = MaterialTheme.shapes.medium,
+//                    elevation = ButtonDefaults.buttonElevation(defaultElevation = 4.dp) // Add elevation
                 ) {
                     Text(
-                        text = "Admin",
-                        style = MaterialTheme.typography.labelLarge
+                        text = "Doctor",
+//                        style = MaterialTheme.typography.labelLarge
                     )
                 }
             }

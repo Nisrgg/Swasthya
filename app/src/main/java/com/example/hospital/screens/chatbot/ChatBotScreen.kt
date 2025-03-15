@@ -176,9 +176,9 @@ fun ChatPagePreview() {
     // Create a mock ViewModel with sample data
     val mockViewModel = ChatBotViewModel().apply {
         // Add some sample messages to the message list
-        messageList.add(MessageModel(role = "user", message = "Hello! How can I help you?"))
-        messageList.add(MessageModel(role = "model", message = "I need assistance with my health records."))
-        messageList.add(MessageModel(role = "user", message = "What should I do next?"))
+        messageList.add(MessageModel(role = "user", message = "Hii"))
+        messageList.add(MessageModel(role = "model", message = "Hello! How can I help you?"))
+        messageList.add(MessageModel(role = "user", message = "I need assistance with my health records."))
     }
 
     // Use the HospitalTheme to apply the theme

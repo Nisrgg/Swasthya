@@ -22,6 +22,7 @@ import java.time.*
 import java.time.format.DateTimeFormatter
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.ui.graphics.Color
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -45,13 +46,18 @@ fun ProfileScreen(
     var emergencyContact by remember { mutableStateOf("") }
     var medicalConditions by remember { mutableStateOf("") }
 
-    val colors = OutlinedTextFieldDefaults.colors(
+    // Improved colors for both edit and view modes
+    val textFieldColors = OutlinedTextFieldDefaults.colors(
         focusedTextColor = MaterialTheme.colorScheme.onSurface,
-        unfocusedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
+        unfocusedTextColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.9f), // Brighter text in view mode
+        disabledTextColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.9f), // Key change: better contrast for disabled fields
         focusedBorderColor = MaterialTheme.colorScheme.primary,
         unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+        disabledBorderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f), // Visible border in view mode
         focusedLabelColor = MaterialTheme.colorScheme.primary,
-        unfocusedLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
+        unfocusedLabelColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.7f),
+        disabledLabelColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.7f), // Visible label in view mode
+        disabledContainerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.1f) // Subtle background for better field visibility
     )
 
     // Update local state when profile loaded
@@ -113,8 +119,7 @@ fun ProfileScreen(
                         label = { Text("Full Name") },
                         enabled = isEditMode,
                         modifier = Modifier.fillMaxWidth(),
-                        colors = colors
-
+                        colors = textFieldColors
                     )
                 }
 
@@ -133,45 +138,55 @@ fun ProfileScreen(
                                 }
                             }
                         },
-                        colors = colors
+                        colors = textFieldColors
                     )
                 }
 
-                // Gender Dropdown
+                // Gender Dropdown - Fixed Implementation
                 item {
                     val genders = listOf("Male", "Female", "Other")
-                    var expanded by remember { mutableStateOf(false) }
+                    var genderMenuExpanded by remember { mutableStateOf(false) }
 
-                    ExposedDropdownMenuBox(
-                        expanded = expanded,
-                        onExpandedChange = { if (isEditMode) expanded = !expanded }
-                    ) {
+                    // For view mode: just display the value with proper styling
+                    if (!isEditMode) {
                         OutlinedTextField(
                             value = gender,
                             onValueChange = {},
                             label = { Text("Gender") },
+                            enabled = false,
                             readOnly = true,
-                            enabled = isEditMode,
                             modifier = Modifier.fillMaxWidth(),
-                            trailingIcon = {
-                                if (isEditMode) {
-                                    ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
-                                }
-                            },
-                            colors = colors
+                            colors = textFieldColors
                         )
+                    } else {
+                        // For edit mode: use the dropdown menu
+                        Box(modifier = Modifier.fillMaxWidth()) {
+                            OutlinedTextField(
+                                value = gender,
+                                onValueChange = {},
+                                label = { Text("Gender") },
+                                readOnly = true,
+                                enabled = true,
+                                modifier = Modifier.fillMaxWidth(),
+                                trailingIcon = {
+                                    IconButton(onClick = { genderMenuExpanded = true }) {
+                                        Icon(Icons.Default.ArrowDropDown, "Show gender options")
+                                    }
+                                },
+                                colors = textFieldColors
+                            )
 
-                        if (isEditMode) {
-                            ExposedDropdownMenu(
-                                expanded = expanded,
-                                onDismissRequest = { expanded = false }
+                            DropdownMenu(
+                                expanded = genderMenuExpanded,
+                                onDismissRequest = { genderMenuExpanded = false },
+                                modifier = Modifier.width(IntrinsicSize.Max)
                             ) {
                                 genders.forEach { option ->
                                     DropdownMenuItem(
                                         text = { Text(option) },
                                         onClick = {
                                             gender = option
-                                            expanded = false
+                                            genderMenuExpanded = false
                                         }
                                     )
                                 }
@@ -189,7 +204,7 @@ fun ProfileScreen(
                         enabled = isEditMode,
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
                         modifier = Modifier.fillMaxWidth(),
-                        colors = colors
+                        colors = textFieldColors
                     )
                 }
 
@@ -201,7 +216,7 @@ fun ProfileScreen(
                         enabled = isEditMode,
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                         modifier = Modifier.fillMaxWidth(),
-                        colors = colors
+                        colors = textFieldColors
                     )
                 }
 
@@ -212,45 +227,55 @@ fun ProfileScreen(
                         label = { Text("Address") },
                         enabled = isEditMode,
                         modifier = Modifier.fillMaxWidth(),
-                        colors = colors
+                        colors = textFieldColors
                     )
                 }
 
-                // Blood Group Dropdown
+                // Blood Group Dropdown - Fixed Implementation
                 item {
                     val bloodGroups = listOf("A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-")
-                    var expanded by remember { mutableStateOf(false) }
+                    var bloodGroupMenuExpanded by remember { mutableStateOf(false) }
 
-                    ExposedDropdownMenuBox(
-                        expanded = expanded,
-                        onExpandedChange = { if (isEditMode) expanded = !expanded }
-                    ) {
+                    // For view mode: just display the value with proper styling
+                    if (!isEditMode) {
                         OutlinedTextField(
                             value = bloodGroup,
                             onValueChange = {},
                             label = { Text("Blood Group") },
+                            enabled = false,
                             readOnly = true,
-                            enabled = isEditMode,
                             modifier = Modifier.fillMaxWidth(),
-                            trailingIcon = {
-                                if (isEditMode) {
-                                    ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
-                                }
-                            },
-                            colors = colors
+                            colors = textFieldColors
                         )
+                    } else {
+                        // For edit mode: use the dropdown menu
+                        Box(modifier = Modifier.fillMaxWidth()) {
+                            OutlinedTextField(
+                                value = bloodGroup,
+                                onValueChange = {},
+                                label = { Text("Blood Group") },
+                                readOnly = true,
+                                enabled = true,
+                                modifier = Modifier.fillMaxWidth(),
+                                trailingIcon = {
+                                    IconButton(onClick = { bloodGroupMenuExpanded = true }) {
+                                        Icon(Icons.Default.ArrowDropDown, "Show blood group options")
+                                    }
+                                },
+                                colors = textFieldColors
+                            )
 
-                        if (isEditMode) {
-                            ExposedDropdownMenu(
-                                expanded = expanded,
-                                onDismissRequest = { expanded = false }
+                            DropdownMenu(
+                                expanded = bloodGroupMenuExpanded,
+                                onDismissRequest = { bloodGroupMenuExpanded = false },
+                                modifier = Modifier.width(IntrinsicSize.Max)
                             ) {
                                 bloodGroups.forEach { option ->
                                     DropdownMenuItem(
                                         text = { Text(option) },
                                         onClick = {
                                             bloodGroup = option
-                                            expanded = false
+                                            bloodGroupMenuExpanded = false
                                         }
                                     )
                                 }
@@ -267,7 +292,7 @@ fun ProfileScreen(
                         enabled = isEditMode,
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
                         modifier = Modifier.fillMaxWidth(),
-                        colors = colors
+                        colors = textFieldColors
                     )
                 }
 
@@ -279,7 +304,7 @@ fun ProfileScreen(
                         enabled = isEditMode,
                         modifier = Modifier.fillMaxWidth(),
                         minLines = 3,
-                        colors = colors
+                        colors = textFieldColors
                     )
                 }
 
@@ -302,7 +327,14 @@ fun ProfileScreen(
                                 viewModel.saveProfile(updatedProfile)
                                 isEditMode = false
                             },
-                            modifier = Modifier.fillMaxWidth()
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 8.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.primary,
+                                contentColor = MaterialTheme.colorScheme.onPrimary
+                            ),
+                            elevation = ButtonDefaults.elevatedButtonElevation(5.dp)
                         ) {
                             Text("Save")
                         }
@@ -343,27 +375,3 @@ fun ProfileScreen(
         }
     }
 }
-
-//@RequiresApi(Build.VERSION_CODES.O)
-//@Preview(showBackground = true)
-//@Composable
-//fun ProfileScreenPreview() {
-//    // Create a mock ProfileViewModel for the preview
-//    val mockViewModel = ProfileViewModel().apply {
-//        // Set up a mock profile
-//        profile.value = UserProfile(
-//            userId = "1",
-//            fullName = "John Doe",
-//            dateOfBirth = "01/01/1990",
-//            gender = "Male",
-//            phoneNumber = "1234567890",
-//            email = "john.doe@example.com",
-//            address = "123 Main St",
-//            bloodGroup = "O+",
-//            emergencyContact = "0987654321",
-//            medicalConditions = "None"
-//        )
-//    }
-//
-//    ProfileScreen(viewModel = mockViewModel, onNavigateBack = {})
-//}
