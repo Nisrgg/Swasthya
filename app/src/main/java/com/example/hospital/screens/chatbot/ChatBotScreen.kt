@@ -161,7 +161,7 @@ fun AppHeader() {
     ) {
         Text(
             modifier = Modifier.padding(16.dp),
-            text = "Health",
+            text = "Health.AI",
             color = Color.White,
             fontSize = 22.sp,
             fontWeight = FontWeight.Bold // Make the header text bold
