@@ -1,0 +1,91 @@
+{
+    "users": {
+      "{patientId}": {
+        "name": "John Doe",
+        "email": "john@example.com",
+        "phone": "+1234567890",
+        "age": 28,
+        "gender": "Male/Female/Other",
+        "height": 175,  
+        "weight": 70,   
+        "blood_group": "B+",
+        "medical_history": "Diabetes, hypertension",
+        "family_history": "Heart disease",
+        "allergies": "Penicillin",
+        "ongoing_medications": "Metformin, Lisinopril"
+      }
+    },
+  
+    "doctors": {
+      "{doctorId}": {
+        "name": "Dr. Smith",
+        "email": "dr.smith@example.com",
+        "phone": "+9876543210",
+        "age": 45,
+        "gender": "Male/Female/Other",
+        "doc_details": {
+          "education": "MBBS, MD",
+          "specialization": "Cardiologist/General Doctor",
+          "experience": 10
+        },
+        "available_slots": [
+          {
+            "day": "Monday",
+            "time_slots": ["09:00 AM", "10:00 AM", "11:00 AM", "04:00 PM"]
+          },
+          {
+            "day": "Tuesday",
+            "time_slots": ["09:00 AM", "10:00 AM", "11:00 AM", "04:00 PM"]
+          }
+        ]
+      }
+    },
+  
+    "appointments": {
+      "{appointmentId}": {
+        "patient_id": "{patientId}",
+        "doctor_id": "{doctorId}",
+        "appointment_date": "2025-04-01",
+        "slot": "10:00 AM",
+        "status": "pending/completed/cancelled",
+        "symptoms": "Chest pain, dizziness",
+        "prescription": "Medication after consultation",
+        "meet_link": "https://meet.google.com/abc-xyz" 
+      }
+    },
+  
+    "doctor_unavailability": {
+      "{doctorId}": {
+        "unavailable_dates": [
+          {
+            "start_date": "2025-04-05",
+            "end_date": "2025-04-07",
+            "reason": "Family emergency"
+          },
+          {
+            "start_date": "2025-04-15",
+            "end_date": "2025-04-16",
+            "reason": "Medical conference"
+          }
+        ]
+      }
+    },
+  
+    "leave_requests": {
+      "{leaveRequestId}": {
+        "doctor_id": "{doctorId}",
+        "start_date": "2025-04-05",
+        "end_date": "2025-04-07",
+        "reason": "Family emergency",
+        "status": "pending/approved/rejected"
+      }
+    },
+  
+    "medical_news": {
+      "{newsId}": {
+        "headline": "New AI Breakthrough in Disease Detection",
+        "content": "AI can now help doctors diagnose conditions faster and more accurately...",
+        "published_date": "2025-03-29"
+      }
+    }
+  }  
