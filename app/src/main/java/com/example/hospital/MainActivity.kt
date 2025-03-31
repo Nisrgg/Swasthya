@@ -43,6 +43,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.hospital.data.viewmodels.ProfileViewModel
 import com.example.hospital.screens.admin.AdminScreen
 import com.example.hospital.screens.admin.AllAppointmentsScreen
+import com.example.hospital.screens.admin.DoctorLoginScreen
 import com.example.hospital.screens.admin.RemoveDoctorScreen
 
 
@@ -58,6 +59,7 @@ class MainActivity : ComponentActivity() {
             oneTapClient = Identity.getSignInClient(applicationContext)
         )
     }
+
 
 
     @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
@@ -155,6 +157,10 @@ class MainActivity : ComponentActivity() {
 
                             composable(Screen.DoctorListScreen.route) {
                                 DoctorListScreen(navController)
+                            }
+
+                            composable(Screen.DoctorLogin.route) {
+                                DoctorLoginScreen(navController)
                             }
 
                             composable(Screen.BookAppointmentScreen.route) { backStackEntry ->

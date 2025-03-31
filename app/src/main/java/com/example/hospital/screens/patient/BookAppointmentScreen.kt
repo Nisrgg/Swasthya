@@ -68,7 +68,8 @@ fun BookAppointmentScreen(
                         userName = userName,
                         appointmentTime = selectedTimestamp,
                         onSuccess = { navController.popBackStack() },
-                        onFailure = { e -> println("Error booking appointment: ${e.message}") }
+                        onFailure = { e -> println("Error booking appointment: ${e.message}") },
+                        symptoms = "Fever"
                     )
                 } else {
                     println("Error: User not logged in")

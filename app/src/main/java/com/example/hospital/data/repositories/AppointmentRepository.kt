@@ -6,12 +6,14 @@ import com.google.firebase.Timestamp
 
 class AppointmentRepository {
 
+    // ✅ Book Appointment
     fun bookAppointment(
         doctorId: String,
         doctorName: String,
-        userId: String,  // ✅ Ensure userId is passed
+        userId: String,
         userName: String,
         appointmentTime: Timestamp,
+        symptoms: String,
         onSuccess: () -> Unit,
         onFailure: (Exception) -> Unit
     ) {
@@ -21,9 +23,10 @@ class AppointmentRepository {
             id = newAppointmentRef.id,
             doctorId = doctorId,
             doctorName = doctorName,
-            userId = userId,  // ✅ Store userId
+            userId = userId,
             userName = userName,
-            appointmentTime = appointmentTime
+            appointmentTime = appointmentTime,
+            symptoms = symptoms
         )
 
         newAppointmentRef.set(appointment)
@@ -37,6 +40,7 @@ class AppointmentRepository {
             }
     }
 
+    // ✅ Get User Appointments
     fun getAppointments(
         userId: String,
         onSuccess: (List<Appointment>) -> Unit,
@@ -46,41 +50,37 @@ class AppointmentRepository {
             .whereEqualTo("userId", userId)
             .get()
             .addOnSuccessListener { documents ->
-                if (documents.isEmpty) {
-                    println("⚠️ No appointments found for userId: $userId")
-                } else {
-                    println("✅ Appointments fetched for userId: $userId")
-                    documents.forEach { println(it.data) }
-                }
-
                 val appointments = documents.mapNotNull { it.toObject(Appointment::class.java) }
                 onSuccess(appointments)
             }
             .addOnFailureListener { exception ->
-                println("❌ Error fetching appointments: ${exception.message}")
                 onFailure(exception)
             }
     }
-    fun getAllAppointments(
-        onSuccess: (List<Appointment>) -> Unit,
-        onFailure: (Exception) -> Unit
-    ) {
+
+    // ✅ Get All Appointments
+    fun getAllAppointments(onSuccess: (List<Appointment>) -> Unit, onFailure: (Exception) -> Unit) {
         FirebaseUtils.db.collection("appointments")
             .get()
             .addOnSuccessListener { documents ->
-                if (documents.isEmpty) {
-                    println("⚠️ No appointments found")
-                } else {
-                    println("✅ All appointments fetched")
-                    documents.forEach { println(it.data) }
-                }
-
                 val appointments = documents.mapNotNull { it.toObject(Appointment::class.java) }
                 onSuccess(appointments)
             }
             .addOnFailureListener { exception ->
-                println("❌ Error fetching appointments: ${exception.message}")
                 onFailure(exception)
             }
+    }
+
+    // ✅ Update Appointment Status
+    fun updateAppointmentStatus(
+        appointmentId: String,
+        status: String,
+        onSuccess: () -> Unit,
+        onFailure: (Exception) -> Unit
+    ) {
+        FirebaseUtils.db.collection("appointments").document(appointmentId)
+            .update("status", status)
+            .addOnSuccessListener { onSuccess() }
+            .addOnFailureListener { onFailure(it) }
     }
 }

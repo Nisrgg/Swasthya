@@ -10,5 +10,8 @@ data class UserProfile(
     val address: String = "",
     val bloodGroup: String = "",
     val emergencyContact: String = "",
-    val medicalConditions: String = ""
+    val medicalConditions: String = "",
+    val allergies: String = "",               // ✅ New field for allergies
+    val pastSurgeries: String = "",           // ✅ New field for past surgeries
+    val medications: String = ""              // ✅ New field for ongoing medications
 )

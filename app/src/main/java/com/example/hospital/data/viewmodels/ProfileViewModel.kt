@@ -11,7 +11,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
-// ProfileViewModel.kt
 class ProfileViewModel : ViewModel() {
     private val firestore = FirebaseFirestore.getInstance()
     private val auth = FirebaseAuth.getInstance()
@@ -25,17 +24,66 @@ class ProfileViewModel : ViewModel() {
     private val _error = MutableStateFlow<String?>(null)
     val error = _error.asStateFlow()
 
+    private val _success = MutableStateFlow<String?>(null)
+    val success = _success.asStateFlow()
+
     init {
         loadProfile()
     }
 
+    /**
+     * Loads the user's profile from Firestore
+     */
     private fun loadProfile() {
         viewModelScope.launch {
             _isLoading.value = true
             try {
                 val userId = auth.currentUser?.uid ?: throw Exception("User not logged in")
                 val document = firestore.collection("users").document(userId).get().await()
-                _profile.value = document.toObject<UserProfile>()
+                if (document.exists()) {
+                    _profile.value = document.toObject<UserProfile>()
+                } else {
+                    _error.value = "Profile not found"
+                }
+            } catch (e: Exception) {
+                _error.value = e.message ?: "Failed to load profile"
+            } finally {
+                _isLoading.value = false
+            }
+        }
+    }
+
+    /**
+     * Saves the updated user profile to Firestore
+     */
+    fun saveProfile(profile: UserProfile) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            try {
+                val userId = auth.currentUser?.uid ?: throw Exception("User not logged in")
+                val documentRef = firestore.collection("users").document(userId)
+
+                // Check if the profile is modified before saving
+                val currentProfile = _profile.value
+                if (currentProfile != profile) {
+                    documentRef.update(
+                        mapOf(
+                            "fullName" to profile.fullName,
+                            "dateOfBirth" to profile.dateOfBirth,
+                            "gender" to profile.gender,
+                            "phoneNumber" to profile.phoneNumber,
+                            "email" to profile.email,
+                            "address" to profile.address,
+                            "bloodGroup" to profile.bloodGroup,
+                            "emergencyContact" to profile.emergencyContact,
+                            "medicalConditions" to profile.medicalConditions
+                        )
+                    ).await()
+                    _profile.value = profile
+                    _error.value = "Profile updated successfully"
+                } else {
+                    _error.value = "No changes to update"
+                }
             } catch (e: Exception) {
                 _error.value = e.message
             } finally {
@@ -44,19 +92,11 @@ class ProfileViewModel : ViewModel() {
         }
     }
 
-    fun saveProfile(profile: UserProfile) {
-        viewModelScope.launch {
-            _isLoading.value = true
-            try {
-                val userId = auth.currentUser?.uid ?: throw Exception("User not logged in")
-                firestore.collection("users").document(userId).set(profile).await()
-                _profile.value = profile
-                _error.value = "Profile saved successfully"
-            } catch (e: Exception) {
-                _error.value = e.message
-            } finally {
-                _isLoading.value = false
-            }
-        }
+    /**
+     * Clears the success and error states after displaying
+     */
+    fun clearStatus() {
+        _error.value = null
+        _success.value = null
     }
 }
