@@ -6,32 +6,32 @@ import com.google.firebase.firestore.FirebaseFirestore
 class DoctorRepository {
     private val db = FirebaseFirestore.getInstance()
 
-    // ✅ Add Doctor
-    fun addDoctor(
-        name: String,
-        specialization: String,
-        availableSlots: Map<String, List<String>>,
-        experience: Int,
-        education: String,
-        onSuccess: () -> Unit,
-        onFailure: (Exception) -> Unit
-    ) {
-        val newDoctorRef = db.collection("doctors").document()
-
-        val doctor = Doctor(
-            id = newDoctorRef.id,
-            name = name,
-            specialization = specialization,
-            availableSlots = availableSlots,
-            experience = experience,
-            education = education
-        )
-
-        newDoctorRef.set(doctor)
-            .addOnSuccessListener { onSuccess() }
-            .addOnFailureListener { onFailure(it) }
-    }
-
+//    // ✅ Add Doctor
+//    fun addDoctor(
+//        name: String,
+//        specialization: String,
+//        availableSlots: Map<String, List<String>>,
+//        experience: Int,
+//        education: String,
+//        onSuccess: () -> Unit,
+//        onFailure: (Exception) -> Unit
+//    ) {
+//        val newDoctorRef = db.collection("doctors").document()
+//
+//        val doctor = Doctor(
+//            id = newDoctorRef.id,
+//            name = name,
+//            specialization = specialization,
+//            availableSlots = availableSlots,
+//            experience = experience,
+//            education = education
+//        )
+//
+//        newDoctorRef.set(doctor)
+//            .addOnSuccessListener { onSuccess() }
+//            .addOnFailureListener { onFailure(it) }
+//    }
+//
     // ✅ Remove Doctor
     fun removeDoctor(doctorId: String, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
         db.collection("doctors").document(doctorId)
@@ -53,16 +53,16 @@ class DoctorRepository {
             }
     }
 
-    // ✅ Update Doctor Availability
-    fun updateDoctorAvailability(
-        doctorId: String,
-        availableSlots: Map<String, List<String>>,
-        onSuccess: () -> Unit,
-        onFailure: (Exception) -> Unit
-    ) {
-        db.collection("doctors").document(doctorId)
-            .update("availableSlots", availableSlots)
-            .addOnSuccessListener { onSuccess() }
-            .addOnFailureListener { onFailure(it) }
-    }
+//    // ✅ Update Doctor Availability
+//    fun updateDoctorAvailability(
+//        doctorId: String,
+//        availableSlots: Map<String, List<String>>,
+//        onSuccess: () -> Unit,
+//        onFailure: (Exception) -> Unit
+//    ) {
+//        db.collection("doctors").document(doctorId)
+//            .update("availableSlots", availableSlots)
+//            .addOnSuccessListener { onSuccess() }
+//            .addOnFailureListener { onFailure(it) }
+//    }
 }
