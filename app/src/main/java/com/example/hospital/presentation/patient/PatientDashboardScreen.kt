@@ -66,7 +66,7 @@ fun PatientDashboardScreen(navController: NavController, authViewModel: AuthView
                     DashboardCard(
                         icon = Icons.Default.Phone,
                         title = "Book Appointment",
-                        onClick = { navController.navigate(Screen.DoctorListScreen.route) }
+                        onClick = { navController.navigate(Screen.MedicalFieldScreen.route) }
                     )
                 }
                 item {

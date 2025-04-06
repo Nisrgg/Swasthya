@@ -20,9 +20,11 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.hospital.chatBot.ChatBotViewModel
 import com.example.hospital.googleSignIn.AuthViewModel
 import com.example.hospital.googleSignIn.GoogleAuthUiClient
@@ -35,6 +37,8 @@ import com.example.hospital.presentation.doctor.DoctorLoginScreen
 import com.example.hospital.presentation.patient.ChatPage
 import com.example.hospital.presentation.patient.DoctorListScreen
 import com.example.hospital.presentation.patient.PatientDashboardScreen
+import com.example.hospital.presentation.patient.DoctorPreviewScreen
+import com.example.hospital.presentation.patient.MedicalFieldSelectionScreen
 
 
 class MainActivity : ComponentActivity() {
@@ -154,9 +158,31 @@ class MainActivity : ComponentActivity() {
                                 DoctorLoginScreen(navController)
                             }
 
-                            composable(Screen.DoctorListScreen.route){
-                                DoctorListScreen()
+                            composable(Screen.MedicalFieldScreen.route){
+                                MedicalFieldSelectionScreen(navController)
                             }
+
+                            composable(
+                                route = Screen.DoctorListScreen.route,
+//                                route = "doctor_list/{specialization}/{ids}",
+                                arguments = listOf(
+                                    navArgument("specialization") { type = NavType.StringType },
+                                    navArgument("ids") { type = NavType.StringType }
+                                )
+                            ) { backStackEntry ->
+                                val spec = backStackEntry.arguments?.getString("specialization") ?: ""
+                                val ids = backStackEntry.arguments?.getString("ids")?.split(",") ?: emptyList()
+
+                                DoctorListScreen(navController = navController, specialization = spec, doctorIds = ids)
+                            }
+
+                            composable(Screen.DoctorPreviewScreen.route) { backStackEntry ->
+                                val doctorId = backStackEntry.arguments?.getString("doctorId")
+                                if (doctorId != null) {
+                                    DoctorPreviewScreen(doctorId = doctorId)
+                                }
+                            }
+
                         }
                     }
                 }

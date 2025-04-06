@@ -10,12 +10,14 @@ sealed class Screen(val route: String) {
 
     object AdminScreen : Screen("admin_screen")
 
-    object DoctorListScreen : Screen("doctor_list")
-
     object DoctorLoginScreen : Screen("doctor_login")
 
     object ProfileScreen: Screen("profile")
 
     object AppointmentsScreen : Screen("user_appointments")
+
+    object DoctorPreviewScreen: Screen("doctor_preview/{doctorId}")
+    object DoctorListScreen : Screen("doctor_list/{specialization}/{ids}")
+    object MedicalFieldScreen: Screen("field_selection")
 }
 

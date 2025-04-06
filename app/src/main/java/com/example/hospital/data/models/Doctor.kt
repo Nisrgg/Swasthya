@@ -1,7 +1,7 @@
 package com.example.hospital.data.models
 
 data class Doctor(
-    val id: String = "",
+    var id: String = "",
     val name: String = "",
     val email: String = "",
     val phone: String = "",
@@ -10,5 +10,5 @@ data class Doctor(
     val education: String = "",
     val specialization: String = "",
     val experience: Int = 0,
-    val availableSlots: Map<String, List<String>> = emptyMap()
+    val available_slots: Map<String, List<String>> = emptyMap()
 )
