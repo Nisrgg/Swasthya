@@ -34,7 +34,6 @@ import com.example.hospital.data.viewmodels.AppointmentViewModel
 import com.example.hospital.data.viewmodels.UserProfileViewModel
 import com.google.android.gms.auth.api.identity.Identity
 import kotlinx.coroutines.launch
-import com.example.hospital.others.googleSignIn.screens.admin.AdminScreen
 import com.example.hospital.presentation.auth.SignInScreenUI
 import com.example.hospital.presentation.doctor.DoctorLoginScreen
 import com.example.hospital.presentation.patient.ChatPage
@@ -44,6 +43,7 @@ import com.example.hospital.presentation.patient.DoctorPreviewScreen
 import com.example.hospital.presentation.admin.MedicalFieldSelectionScreen
 import com.example.hospital.presentation.admin.OnboardingScreen
 import com.example.hospital.presentation.appointment.AppointmentsListScreen
+import com.example.hospital.presentation.doctor.DoctorHomeScreen
 import com.example.hospital.presentation.patient.UserProfileScreen
 import com.google.firebase.auth.FirebaseAuth
 
@@ -83,29 +83,64 @@ class MainActivity : ComponentActivity() {
                         ) {
 
                             composable(Screen.WelcomeScreen.route) {
-                                LaunchedEffect(key1 = Unit) {
-                                    val userData = googleAuthUiClient.getSignedInUser()
-                                    if (userData != null) {
-                                        navController.navigate(Screen.PatientDashboard.route) {
-                                            popUpTo(Screen.WelcomeScreen.route) { inclusive = true }
-                                        }
+                                LaunchedEffect(Unit) {
+                                    val currentUser = FirebaseAuth.getInstance().currentUser
+
+                                    if (currentUser != null) {
+                                        // 🔄 Try to fetch custom claims
+                                        currentUser.getIdToken(true)
+                                            .addOnSuccessListener { result ->
+                                                val role = result.claims["role"] as? String
+                                                when (role) {
+                                                    "doctor" -> {
+                                                        navController.navigate(Screen.DoctorHomeScreen.route) {
+                                                            popUpTo(Screen.WelcomeScreen.route) { inclusive = true }
+                                                        }
+                                                    }
+
+                                                    null -> {
+                                                        // Check if Google user
+                                                        val userData = googleAuthUiClient.getSignedInUser()
+                                                        if (userData != null) {
+                                                            navController.navigate(Screen.PatientDashboard.route) {
+                                                                popUpTo(Screen.WelcomeScreen.route) { inclusive = true }
+                                                            }
+                                                        } else {
+                                                            // Unknown role or error fallback
+                                                            navController.navigate(Screen.SignInScreen.route) {
+                                                                popUpTo(Screen.WelcomeScreen.route) { inclusive = true }
+                                                            }
+                                                        }
+                                                    }
+
+                                                    else -> {
+                                                        // Unknown or unexpected role
+                                                        FirebaseAuth.getInstance().signOut()
+                                                        navController.navigate(Screen.SignInScreen.route) {
+                                                            popUpTo(Screen.WelcomeScreen.route) { inclusive = true }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            .addOnFailureListener {
+                                                // In case of error getting token
+                                                navController.navigate(Screen.SignInScreen.route) {
+                                                    popUpTo(Screen.WelcomeScreen.route) { inclusive = true }
+                                                }
+                                            }
                                     } else {
+                                        // No Firebase user at all → show SignInScreen
                                         navController.navigate(Screen.SignInScreen.route) {
                                             popUpTo(Screen.WelcomeScreen.route) { inclusive = true }
                                         }
                                     }
                                 }
-
-
-                            }
-
-                            composable(Screen.PatientDashboard.route) {
-                                PatientDashboardScreen(navController, viewModel)
                             }
 
                             composable(Screen.SignInScreen.route) {
                                 val launcher =
-                                    rememberLauncherForActivityResult(contract = ActivityResultContracts.StartIntentSenderForResult(),
+                                    rememberLauncherForActivityResult(
+                                        contract = ActivityResultContracts.StartIntentSenderForResult(),
                                         onResult = { result ->
                                             Log.d(
                                                 "MainActivity",
@@ -153,6 +188,10 @@ class MainActivity : ComponentActivity() {
                                 })
                             }
 
+                            composable(Screen.PatientDashboard.route) {
+                                PatientDashboardScreen(navController, viewModel)
+                            }
+
                             composable(Screen.ChatBotScreen.route) {
                                 ChatPage(modifier = Modifier.padding(innerPadding), chatViewModel)
                             }
@@ -193,11 +232,8 @@ class MainActivity : ComponentActivity() {
                                 }
                             }
 
-
-
-
-                            composable(Screen.AdminScreen.route) {
-                                AdminScreen(navController)
+                            composable(Screen.DoctorHomeScreen.route) {
+                                DoctorHomeScreen(navController)
                             }
 
                             composable(Screen.DoctorLoginScreen.route){
@@ -209,11 +245,11 @@ class MainActivity : ComponentActivity() {
                             }
 
                             composable(
-                                route = Screen.DoctorListScreen.route,
-                                arguments = listOf(
+                                route = Screen.DoctorListScreen.route, arguments = listOf(
                                     navArgument("specialization") { type = NavType.StringType },
-                                    navArgument("ids") { type = NavType.StringType }
-                                )
+                                    navArgument("ids") {
+                                        type = NavType.StringType
+                                    })
                             ) { backStackEntry ->
                                 val spec =
                                     backStackEntry.arguments?.getString("specialization") ?: ""

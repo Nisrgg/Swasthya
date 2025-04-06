@@ -2,8 +2,10 @@ package com.example.hospital.data.repositories
 
 import android.util.Log
 import com.example.hospital.data.models.Doctor
+import com.google.firebase.Firebase
 import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.tasks.await
 
 class DoctorRepository {
@@ -38,4 +40,15 @@ class DoctorRepository {
             emptyList()
         }
     }
+    fun checkIfDoctor(uid: String, onResult: (Boolean) -> Unit) {
+        val db = Firebase.firestore
+        db.collection("doctors").document(uid).get()
+            .addOnSuccessListener { document ->
+                onResult(document.exists())
+            }
+            .addOnFailureListener {
+                onResult(false)
+            }
+    }
+
 }

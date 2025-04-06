@@ -33,7 +33,9 @@ fun loginDoctor(
 
                             if (isDoctor) {
                                 Log.d("DoctorLogin", "Login success for doctor: $email")
-                                navController.navigate(Screen.AdminScreen.route)
+                                navController.navigate(Screen.DoctorHomeScreen.route) {
+                                    popUpTo(Screen.SignInScreen.route) { inclusive = true }
+                                }
                             } else {
                                 Log.e("LoginError", "Not a doctor account.")
                                 Toast.makeText(
