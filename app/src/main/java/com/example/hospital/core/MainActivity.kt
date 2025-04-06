@@ -20,6 +20,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -29,16 +30,22 @@ import com.example.hospital.chatBot.ChatBotViewModel
 import com.example.hospital.googleSignIn.AuthViewModel
 import com.example.hospital.googleSignIn.GoogleAuthUiClient
 import com.example.hospital.core.theme.HospitalTheme
+import com.example.hospital.data.viewmodels.AppointmentViewModel
+import com.example.hospital.data.viewmodels.UserProfileViewModel
 import com.google.android.gms.auth.api.identity.Identity
 import kotlinx.coroutines.launch
 import com.example.hospital.others.googleSignIn.screens.admin.AdminScreen
 import com.example.hospital.presentation.auth.SignInScreenUI
 import com.example.hospital.presentation.doctor.DoctorLoginScreen
 import com.example.hospital.presentation.patient.ChatPage
-import com.example.hospital.presentation.patient.DoctorListScreen
+import com.example.hospital.presentation.admin.DoctorListScreen
 import com.example.hospital.presentation.patient.PatientDashboardScreen
 import com.example.hospital.presentation.patient.DoctorPreviewScreen
-import com.example.hospital.presentation.patient.MedicalFieldSelectionScreen
+import com.example.hospital.presentation.admin.MedicalFieldSelectionScreen
+import com.example.hospital.presentation.admin.OnboardingScreen
+import com.example.hospital.presentation.appointment.AppointmentsListScreen
+import com.example.hospital.presentation.patient.UserProfileScreen
+import com.google.firebase.auth.FirebaseAuth
 
 
 class MainActivity : ComponentActivity() {
@@ -150,6 +157,45 @@ class MainActivity : ComponentActivity() {
                                 ChatPage(modifier = Modifier.padding(innerPadding), chatViewModel)
                             }
 
+                            composable(Screen.AppointmentsListScreen.route){ backStackEntry ->
+                                val viewModel: AppointmentViewModel = viewModel(backStackEntry)
+                                AppointmentsListScreen(viewModel = viewModel)
+                            }
+
+                            composable(Screen.ProfileScreen.route) {
+                                val viewModel: UserProfileViewModel = viewModel()
+                                val userId = FirebaseAuth.getInstance().currentUser?.uid
+
+                                if (userId != null) {
+                                    viewModel.loadUserProfile(userId)
+                                    UserProfileScreen(userId = userId, navController = navController, viewModel = viewModel)
+                                } else {
+                                    // Handle case where userId is null (optional)
+                                }
+                            }
+
+                            composable(Screen.OnboardingScreen.route) {
+                                val viewModel: UserProfileViewModel = viewModel()
+                                val userId = FirebaseAuth.getInstance().currentUser?.uid
+
+                                if (userId != null) {
+                                    viewModel.loadUserProfile(userId)
+
+                                    if (viewModel.isProfileLoaded) {
+                                        UserProfileScreen(userId = userId, navController = navController, viewModel = viewModel)
+                                    } else {
+                                        OnboardingScreen(userId = userId, navController = navController, viewModel = viewModel) {
+                                            navController.navigate(Screen.ProfileScreen.route) {
+                                                popUpTo(Screen.OnboardingScreen.route) { inclusive = true }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+
+
+
                             composable(Screen.AdminScreen.route) {
                                 AdminScreen(navController)
                             }
@@ -164,22 +210,27 @@ class MainActivity : ComponentActivity() {
 
                             composable(
                                 route = Screen.DoctorListScreen.route,
-//                                route = "doctor_list/{specialization}/{ids}",
                                 arguments = listOf(
                                     navArgument("specialization") { type = NavType.StringType },
                                     navArgument("ids") { type = NavType.StringType }
                                 )
                             ) { backStackEntry ->
-                                val spec = backStackEntry.arguments?.getString("specialization") ?: ""
-                                val ids = backStackEntry.arguments?.getString("ids")?.split(",") ?: emptyList()
+                                val spec =
+                                    backStackEntry.arguments?.getString("specialization") ?: ""
+                                val ids = backStackEntry.arguments?.getString("ids")?.split(",")
+                                    ?: emptyList()
 
-                                DoctorListScreen(navController = navController, specialization = spec, doctorIds = ids)
+                                DoctorListScreen(
+                                    navController = navController,
+                                    specialization = spec,
+                                    doctorIds = ids
+                                )
                             }
 
                             composable(Screen.DoctorPreviewScreen.route) { backStackEntry ->
                                 val doctorId = backStackEntry.arguments?.getString("doctorId")
                                 if (doctorId != null) {
-                                    DoctorPreviewScreen(doctorId = doctorId)
+                                    DoctorPreviewScreen(doctorId = doctorId, navController)
                                 }
                             }
 

@@ -1,4 +1,4 @@
-package com.example.hospital.presentation.patient
+package com.example.hospital.presentation.admin
 
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -65,16 +65,11 @@ fun DoctorCard(doctor: Doctor, onClick: () -> Unit) {
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Text("👩‍⚕️ Dr. ${doctor.name}", style = MaterialTheme.typography.titleMedium)
-            Text("Experience: ${doctor.experience} years")
-
-            val today = LocalDate.now().dayOfWeek.name.lowercase().replaceFirstChar { it.uppercase() }
-            val isAvailable = doctor.available_slots.containsKey(today)
-
-            Text("Available Today: ${if (isAvailable) "✅ Yes" else "❌ No"}")
+            Text("👨‍⚕️ Dr. ${doctor.name}", style = MaterialTheme.typography.titleMedium)
         }
     }
 }
+
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Preview(showSystemUi = true)

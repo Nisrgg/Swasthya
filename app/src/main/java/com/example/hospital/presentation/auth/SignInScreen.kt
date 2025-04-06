@@ -80,7 +80,7 @@ fun SignInScreenUI(
 
             // Title Section
             Text(
-                text = "Swasthya",
+                text = "Swaasthya",
                 style = MaterialTheme.typography.displayMedium.copy(fontWeight = FontWeight.Bold),
                 color = MaterialTheme.colorScheme.onBackground
             )

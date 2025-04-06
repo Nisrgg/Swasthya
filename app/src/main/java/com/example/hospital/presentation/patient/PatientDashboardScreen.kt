@@ -43,7 +43,7 @@ fun PatientDashboardScreen(navController: NavController, authViewModel: AuthView
                 title = { Text("Dashboard") },
                 actions = {
                     IconButton(onClick = {
-                        navController.navigate(Screen.ProfileScreen.route)
+                        navController.navigate(Screen.OnboardingScreen.route)
                     }) {
                         Icon(Icons.Default.Person, contentDescription = "Profile")
                     }
@@ -73,7 +73,7 @@ fun PatientDashboardScreen(navController: NavController, authViewModel: AuthView
                     DashboardCard(
                         icon = Icons.Default.List,
                         title = "Appointments",
-                        onClick = { navController.navigate(Screen.AppointmentsScreen.route) }
+                        onClick = { navController.navigate(Screen.AppointmentsListScreen.route) }
                     )
                 }
 //                item {

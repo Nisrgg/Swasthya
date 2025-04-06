@@ -1,4 +1,4 @@
-package com.example.hospital.presentation.patient
+package com.example.hospital.presentation.admin
 
 import android.content.Context
 import androidx.compose.foundation.clickable
