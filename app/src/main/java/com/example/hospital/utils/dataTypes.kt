@@ -18,10 +18,6 @@ data class AppState(
     val signInError: String?=null
 )
 
-data class MessageModel(
-    val message : String,
-    val role : String
-)
 
 
 
