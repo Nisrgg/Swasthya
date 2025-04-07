@@ -145,7 +145,7 @@ fun DoctorPreviewScreen(
                                     patient_id = patientId,
                                     prescription = "",
                                     slot = slot,
-                                    status = "pending"
+                                    status = "confirmed"
                                 )
 
                                 appointmentRepo.bookAppointment(appointment) { success ->

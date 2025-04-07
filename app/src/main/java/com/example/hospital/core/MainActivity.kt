@@ -30,7 +30,9 @@ import com.example.hospital.chatBot.ChatBotViewModel
 import com.example.hospital.googleSignIn.AuthViewModel
 import com.example.hospital.googleSignIn.GoogleAuthUiClient
 import com.example.hospital.core.theme.HospitalTheme
+import com.example.hospital.data.viewmodels.AppointmentDoctorViewModel
 import com.example.hospital.data.viewmodels.AppointmentViewModel
+import com.example.hospital.data.viewmodels.DoctorLeaveViewModel
 import com.example.hospital.data.viewmodels.UserProfileViewModel
 import com.google.android.gms.auth.api.identity.Identity
 import kotlinx.coroutines.launch
@@ -42,8 +44,12 @@ import com.example.hospital.presentation.patient.PatientDashboardScreen
 import com.example.hospital.presentation.patient.DoctorPreviewScreen
 import com.example.hospital.presentation.admin.MedicalFieldSelectionScreen
 import com.example.hospital.presentation.admin.OnboardingScreen
+import com.example.hospital.presentation.admin.RescheduleAppointmentScreen
 import com.example.hospital.presentation.appointment.AppointmentsListScreen
 import com.example.hospital.presentation.doctor.DoctorHomeScreen
+import com.example.hospital.data.viewmodels.DoctorViewModel
+import com.example.hospital.data.viewmodels.LeaveRequestViewModel
+import com.example.hospital.presentation.doctor.LeaveRequestScreen
 import com.example.hospital.presentation.patient.UserProfileScreen
 import com.google.firebase.auth.FirebaseAuth
 
@@ -52,6 +58,10 @@ class MainActivity : ComponentActivity() {
 
     private val viewModel: AuthViewModel by viewModels()
     private val chatViewModel: ChatBotViewModel by viewModels()
+    private val doctorViewModel: DoctorViewModel by viewModels()
+    private val userProfileViewModel: UserProfileViewModel by viewModels()
+    private val appointmentViewModel: AppointmentViewModel by viewModels()
+    private val appointmentDoctorViewModel: AppointmentDoctorViewModel by viewModels()
 
     private val googleAuthUiClient by lazy {
         GoogleAuthUiClient(
@@ -93,7 +103,8 @@ class MainActivity : ComponentActivity() {
                                                 val role = result.claims["role"] as? String
                                                 when (role) {
                                                     "doctor" -> {
-                                                        navController.navigate(Screen.DoctorHomeScreen.route) {
+                                                        val doctorId = currentUser.uid
+                                                        navController.navigate("doctor_home/$doctorId") {
                                                             popUpTo(Screen.WelcomeScreen.route) { inclusive = true }
                                                         }
                                                     }
@@ -232,9 +243,14 @@ class MainActivity : ComponentActivity() {
                                 }
                             }
 
-                            composable(Screen.DoctorHomeScreen.route) {
-                                DoctorHomeScreen(navController)
+                            composable(
+                                Screen.DoctorHomeScreen.route,
+                                arguments = listOf(navArgument("doctorId") { type = NavType.StringType })
+                            ) { backStackEntry ->
+                                val doctorId = backStackEntry.arguments?.getString("doctorId")!!
+                                DoctorHomeScreen(doctorId, navController)
                             }
+
 
                             composable(Screen.DoctorLoginScreen.route){
                                 DoctorLoginScreen(navController)
@@ -267,6 +283,30 @@ class MainActivity : ComponentActivity() {
                                 val doctorId = backStackEntry.arguments?.getString("doctorId")
                                 if (doctorId != null) {
                                     DoctorPreviewScreen(doctorId = doctorId, navController)
+                                }
+                            }
+
+//                            composable(Screen.MyAppointment.route){ backStackEntry ->
+//                                val doctorId = backStackEntry.arguments?.getString("doctorId")
+//                                val viewModel: DoctorViewModel by viewModels()
+//                                if (doctorId != null) {
+//                                    MyAppointmentsScreen(doctorId = doctorId, viewModel = viewModel )
+//                                }
+//                            }
+//
+                            composable(Screen.LeaveScreen.route){ backStackEntry ->
+                                val doctorId = backStackEntry.arguments?.getString("doctorId")
+                                val viewModel: LeaveRequestViewModel by viewModels()
+                                if (doctorId != null) {
+                                    LeaveRequestScreen(doctorId = doctorId, viewModel = viewModel )
+                                }
+                            }
+
+                            composable(Screen.RescheduleScreen.route){ backStackEntry ->
+                                val doctorId = backStackEntry.arguments?.getString("doctorId")
+                                val viewModel: DoctorViewModel by viewModels()
+                                if (doctorId != null) {
+                                    RescheduleAppointmentScreen(doctorId = doctorId, viewModel = viewModel )
                                 }
                             }
 

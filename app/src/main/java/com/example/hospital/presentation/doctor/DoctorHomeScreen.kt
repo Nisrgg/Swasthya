@@ -24,7 +24,10 @@ import com.google.firebase.auth.FirebaseAuth
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DoctorHomeScreen(navController: NavController) {
+fun DoctorHomeScreen(
+    doctorId: String,
+    navController: NavController)
+{
     Scaffold(
         topBar = {
             TopAppBar(
@@ -70,17 +73,12 @@ fun DoctorHomeScreen(navController: NavController) {
                     SectionTitle("Your Daily Operations")
                     PrimaryButton(
                         text = "View Appointments",
-                        onClick = { navController.navigate("doctor_appointments") },
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                    PrimaryButton(
-                        text = "Manage Availability",
-                        onClick = { navController.navigate("manage_availability") },
+                        onClick = { navController.navigate("all_appointments/$doctorId") },
                         modifier = Modifier.fillMaxWidth()
                     )
                     PrimaryButton(
                         text = "Write Prescriptions",
-                        onClick = { navController.navigate("write_prescription") },
+                        onClick = { /*navController.navigate("write_prescription")*/ },
                         modifier = Modifier.fillMaxWidth()
                     )
                 }
@@ -93,12 +91,12 @@ fun DoctorHomeScreen(navController: NavController) {
                     SectionTitle("More Options")
                     PrimaryButton(
                         text = "Request Leave",
-                        onClick = { navController.navigate("request_leave") },
+                        onClick = { navController.navigate("leave_request/$doctorId") },
                         modifier = Modifier.fillMaxWidth()
                     )
                     PrimaryButton(
                         text = "Reschedule Appointments",
-                        onClick = { navController.navigate("reschedule_appointments") },
+                        onClick = { navController.navigate("reschedule_appointment/$doctorId") },
                         modifier = Modifier.fillMaxWidth()
                     )
                 }
@@ -146,7 +144,7 @@ private fun QuickActionButton(
 @Composable
 fun DoctorLandingScreenPreview() {
     HospitalTheme {
-        DoctorHomeScreen(navController = rememberNavController())
+        DoctorHomeScreen("123", navController = rememberNavController())
     }
 }
 
@@ -154,6 +152,6 @@ fun DoctorLandingScreenPreview() {
 @Composable
 fun DoctorLandingScreenDarkPreview() {
     HospitalTheme(darkTheme = true) {
-        DoctorHomeScreen(navController = rememberNavController())
+        DoctorHomeScreen("123", navController = rememberNavController())
     }
 }

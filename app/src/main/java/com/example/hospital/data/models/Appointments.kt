@@ -8,5 +8,11 @@ data class Appointment(
     val patient_id: String = "",
     val prescription: String = "",
     val slot: String = "",
-    val status: String = "pending"
+    val status: String = "",
+    val patient_name: String = "" // Add this!
+)
+
+data class AppointmentWithId(
+    val id: String,
+    val data: Appointment
 )

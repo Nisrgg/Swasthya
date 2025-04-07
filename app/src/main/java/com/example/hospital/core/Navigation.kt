@@ -13,14 +13,17 @@ sealed class Screen(val route: String) {
     object ProfileScreen: Screen("profile/{userId}")
     object OnboardingScreen: Screen("post_login/{userId}")
 
-    object AdminScreen : Screen("admin_screen")     // miscellaneous
-
     // booking appointments
     object DoctorPreviewScreen: Screen("doctor_preview/{doctorId}")
     object DoctorListScreen : Screen("doctor_list/{specialization}/{ids}")
     object MedicalFieldScreen: Screen("field_selection")
 
     // Doctor
-    object DoctorHomeScreen: Screen("doctor_home")
+    object DoctorHomeScreen: Screen("doctor_home/{doctorId}")
+
+
+    object RescheduleScreen : Screen("reschedule_appointment/{doctorId}")
+    object LeaveScreen: Screen("leave_request/{doctorId}")
+    object MyAppointment: Screen("all_appointments/{doctorId}")
 }
 

@@ -16,7 +16,6 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.hospital.data.models.Doctor
 import com.example.hospital.data.viewmodels.DoctorViewModel
-import java.time.LocalDate
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)

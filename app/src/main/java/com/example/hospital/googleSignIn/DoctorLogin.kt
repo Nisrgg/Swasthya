@@ -2,13 +2,9 @@ package com.example.hospital.googleSignIn
 
 import android.util.Log
 import android.widget.Toast
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.example.hospital.core.Screen
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
 
 fun loginDoctor(
     email: String,
@@ -33,7 +29,7 @@ fun loginDoctor(
 
                             if (isDoctor) {
                                 Log.d("DoctorLogin", "Login success for doctor: $email")
-                                navController.navigate(Screen.DoctorHomeScreen.route) {
+                                navController.navigate("doctor_home/$uid") {  // 👈 Pass doctorId here
                                     popUpTo(Screen.SignInScreen.route) { inclusive = true }
                                 }
                             } else {
