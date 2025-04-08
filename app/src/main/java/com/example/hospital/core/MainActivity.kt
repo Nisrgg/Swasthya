@@ -50,6 +50,7 @@ import com.example.hospital.presentation.doctor.DoctorHomeScreen
 import com.example.hospital.data.viewmodels.DoctorViewModel
 import com.example.hospital.data.viewmodels.LeaveRequestViewModel
 import com.example.hospital.presentation.doctor.LeaveRequestScreen
+import com.example.hospital.presentation.doctor.MyAppointmentsScreen
 import com.example.hospital.presentation.patient.UserProfileScreen
 import com.google.firebase.auth.FirebaseAuth
 
@@ -286,14 +287,14 @@ class MainActivity : ComponentActivity() {
                                 }
                             }
 
-//                            composable(Screen.MyAppointment.route){ backStackEntry ->
-//                                val doctorId = backStackEntry.arguments?.getString("doctorId")
-//                                val viewModel: DoctorViewModel by viewModels()
-//                                if (doctorId != null) {
-//                                    MyAppointmentsScreen(doctorId = doctorId, viewModel = viewModel )
-//                                }
-//                            }
-//
+                            composable(Screen.MyAppointment.route){ backStackEntry ->
+                                val doctorId = backStackEntry.arguments?.getString("doctorId")
+                                val viewModel: DoctorViewModel by viewModels()
+                                if (doctorId != null) {
+                                    MyAppointmentsScreen(doctorId = doctorId, viewModel = viewModel )
+                                }
+                            }
+
                             composable(Screen.LeaveScreen.route){ backStackEntry ->
                                 val doctorId = backStackEntry.arguments?.getString("doctorId")
                                 val viewModel: LeaveRequestViewModel by viewModels()

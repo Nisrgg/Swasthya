@@ -23,8 +23,8 @@ class DoctorViewModel(
     private val _appointments = MutableStateFlow<List<AppointmentWithId>>(emptyList())
     val appointments: StateFlow<List<AppointmentWithId>> = _appointments
 
-    private val _upcomingAppointments = MutableStateFlow<List<Pair<String, Appointment>>>(emptyList())
-    val upcomingAppointments: StateFlow<List<Pair<String, Appointment>>> = _upcomingAppointments
+    private val _upcomingAppointments = MutableStateFlow<List<AppointmentWithId>>(emptyList())
+    val upcomingAppointments: StateFlow<List<AppointmentWithId>> = _upcomingAppointments
 
     val selectedDoctor = mutableStateOf<Doctor?>(null)
 

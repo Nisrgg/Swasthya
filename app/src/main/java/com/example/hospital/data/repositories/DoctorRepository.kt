@@ -51,7 +51,7 @@ class DoctorRepository {
 
     fun getUpcomingAppointments(
         doctorId: String,
-        onComplete: (List<Pair<String, Appointment>>) -> Unit
+        onComplete: (List<AppointmentWithId>) -> Unit
     ) {
         val today = Timestamp.now()
         db.collection("appointments")
@@ -62,9 +62,8 @@ class DoctorRepository {
             .addOnSuccessListener { result ->
                 val appointments = result.documents.mapNotNull {
                     val appointment = it.toObject(Appointment::class.java)
-                    if (appointment != null) it.id to appointment else null
+                    appointment?.let { appt -> AppointmentWithId(it.id, appt) }
                 }
-                Log.d("REPO", "Fetched ${appointments.size} upcoming appointments")
                 onComplete(appointments)
             }
             .addOnFailureListener {
@@ -90,6 +89,8 @@ class DoctorRepository {
             .addOnFailureListener { onComplete(false) }
     }
 
+    // never used
+
 //    fun requestLeave(doctorId: String, start: String, end: String, onComplete: (Boolean) -> Unit) {
 //        val leave = mapOf("doctor_id" to doctorId, "start_date" to start, "end_date" to end)
 //        db.collection("leave_requests").add(leave)
@@ -105,7 +106,6 @@ class DoctorRepository {
             .addOnFailureListener { onComplete(false) }
     }
 
-    //never used
     suspend fun getAllDoctors(): List<Doctor> {
         return try {
             val snapshot = db.collection("doctors").get().await()
