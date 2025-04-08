@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.example.hospital.data.models.Appointment
 import com.example.hospital.data.models.Doctor
 import com.example.hospital.data.viewmodels.AppointmentDoctorViewModel
@@ -18,7 +19,6 @@ import com.example.hospital.data.viewmodels.AppointmentViewModel
 import com.google.firebase.auth.FirebaseAuth
 import java.text.SimpleDateFormat
 import java.util.*
-
 
 @Composable
 fun AppointmentsListScreen(
@@ -28,38 +28,42 @@ fun AppointmentsListScreen(
     val doctorMap by doctorViewModel.doctorMap
     val context = LocalContext.current
     val auth = FirebaseAuth.getInstance()
-
     val patientId = remember { mutableStateOf<String?>(null) }
     val nowDate = remember { Date() }
     val appointments by viewModel.appointments
 
-    // Run once to get patient ID and appointments
+    // Fetch patient ID and appointments when the composable is first launched.
     LaunchedEffect(true) {
-        val uid = auth.currentUser?.uid
-        if (uid != null) {
+        auth.currentUser?.uid?.let { uid ->
             patientId.value = uid
-            viewModel.fetchAppointments(uid)  // if needed to trigger fetching
-        } else {
+            viewModel.fetchAppointments(uid) // Trigger fetching appointments
+        } ?: run {
             Toast.makeText(context, "User not logged in", Toast.LENGTH_SHORT).show()
         }
     }
 
-// Run whenever appointments change and are non-empty
+    // When appointments update, fetch the associated doctors.
     LaunchedEffect(appointments) {
         if (appointments.isNotEmpty()) {
             doctorViewModel.fetchDoctorsForAppointments(appointments)
         }
     }
 
-
+    // Separate appointments into upcoming and past appointments.
     val upcomingAppointments = appointments.filter { it.appointment_date.toDate().after(nowDate) }
     val pastAppointments = appointments.filter { it.appointment_date.toDate().before(nowDate) }
 
     Column(modifier = Modifier.padding(16.dp)) {
-        Text("Upcoming Appointments", style = MaterialTheme.typography.titleLarge)
+        Text(
+            text = "Upcoming Appointments",
+            style = MaterialTheme.typography.titleLarge
+        )
         Spacer(modifier = Modifier.height(8.dp))
         if (upcomingAppointments.isEmpty()) {
-            Text("No upcoming appointments.")
+            Text(
+                text = "No upcoming appointments.",
+                style = MaterialTheme.typography.bodyMedium
+            )
         } else {
             LazyColumn {
                 items(upcomingAppointments) { appointment ->
@@ -73,10 +77,16 @@ fun AppointmentsListScreen(
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        Text("Finished Appointments", style = MaterialTheme.typography.titleLarge)
+        Text(
+            text = "Finished Appointments",
+            style = MaterialTheme.typography.titleLarge
+        )
         Spacer(modifier = Modifier.height(8.dp))
         if (pastAppointments.isEmpty()) {
-            Text("No finished appointments.")
+            Text(
+                text = "No finished appointments.",
+                style = MaterialTheme.typography.bodyMedium
+            )
         } else {
             LazyColumn {
                 items(pastAppointments) { appointment ->
@@ -92,6 +102,7 @@ fun AppointmentsListScreen(
 
 @Composable
 fun AppointmentCard(appointment: Appointment, doctor: Doctor?) {
+    // Format appointment date.
     val formattedDate = remember(appointment.appointment_date) {
         val sdf = SimpleDateFormat("dd MMMM yyyy", Locale.getDefault())
         sdf.format(appointment.appointment_date.toDate())
@@ -106,14 +117,13 @@ fun AppointmentCard(appointment: Appointment, doctor: Doctor?) {
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
     ) {
         Column(modifier = Modifier.padding(20.dp)) {
-
-            // Doctor Name
+            // Doctor's name header.
             Text(
                 text = "👨‍⚕️ Dr. ${doctor?.name ?: "Doctor"}",
                 style = MaterialTheme.typography.titleMedium
             )
 
-            // Specialization
+            // Specialization (if available).
             doctor?.specialization?.let {
                 Text(
                     text = "Specialization: $it",
@@ -124,7 +134,7 @@ fun AppointmentCard(appointment: Appointment, doctor: Doctor?) {
 
             Divider(modifier = Modifier.padding(vertical = 8.dp))
 
-            // Date and Slot
+            // Date and Slot info.
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier.fillMaxWidth()
@@ -145,7 +155,7 @@ fun AppointmentCard(appointment: Appointment, doctor: Doctor?) {
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            // Status (optional)
+            // Appointment status (if provided).
             appointment.status?.let {
                 Text(
                     text = "Status: ${it.replaceFirstChar { char -> char.uppercase() }}",
@@ -154,7 +164,7 @@ fun AppointmentCard(appointment: Appointment, doctor: Doctor?) {
                 )
             }
 
-            // Prescription (if available)
+            // Display prescription details if available.
             if (appointment.prescription.isNotEmpty()) {
                 Spacer(modifier = Modifier.height(8.dp))
                 Divider()
@@ -163,7 +173,10 @@ fun AppointmentCard(appointment: Appointment, doctor: Doctor?) {
                     style = MaterialTheme.typography.labelMedium,
                     modifier = Modifier.padding(top = 6.dp, bottom = 2.dp)
                 )
-                Text(appointment.prescription, style = MaterialTheme.typography.bodyMedium)
+                Text(
+                    text = appointment.prescription,
+                    style = MaterialTheme.typography.bodyMedium
+                )
             }
         }
     }

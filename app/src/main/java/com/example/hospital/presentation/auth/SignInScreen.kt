@@ -40,19 +40,17 @@ fun SignInScreenUI(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(gradientBrush) // Use gradient background
+            .background(gradientBrush)
             .systemBarsPadding()
     ) {
-        // Background Image
         Image(
             painter = painterResource(id = R.drawable.login_blur),
             contentDescription = null,
-            modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Crop,
-            alpha = 0.3f // Make the background image less prominent
+            modifier = Modifier.fillMaxSize(),
+            alpha = 0.3f
         )
 
-        // Content
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -61,24 +59,22 @@ fun SignInScreenUI(
         ) {
             Spacer(modifier = Modifier.height(48.dp))
 
-            // Logo Section
             HospitalCard(
                 modifier = Modifier
                     .size(120.dp)
                     .clip(MaterialTheme.shapes.large)
-                    .shadow(8.dp, MaterialTheme.shapes.large) // Add shadow for depth
+                    .shadow(8.dp, MaterialTheme.shapes.large)
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.ic_hospital_logo),
                     contentDescription = "App Logo",
-                    modifier = Modifier.fillMaxSize(),
-                    contentScale = ContentScale.Crop
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.fillMaxSize()
                 )
             }
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Title Section
             Text(
                 text = "Swaasthya",
                 style = MaterialTheme.typography.displayMedium.copy(fontWeight = FontWeight.Bold),
@@ -95,41 +91,36 @@ fun SignInScreenUI(
 
             Spacer(modifier = Modifier.weight(1f))
 
-            // Buttons Section
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(16.dp),
-                modifier = Modifier.padding(bottom = 32.dp)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 32.dp)
             ) {
-                // Google Sign In Button
                 PrimaryButton(
                     text = "Continue with Google",
                     onClick = onSignInClick,
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth()
                 )
 
-                // Admin Button
-                Button(
+                OutlinedButton(
                     onClick = { navController.navigate("doctor_login") },
                     modifier = Modifier
-                        .fillMaxWidth(0.3f)
+                        .fillMaxWidth(0.4f)
                         .height(48.dp),
-//                    colors = ButtonDefaults.buttonColors(
-//                        containerColor = MaterialTheme.colorScheme.onTertiaryContainer,
-//                        contentColor = MaterialTheme.colorScheme.onSecondaryContainer
-//                    ),
-//                    shape = MaterialTheme.shapes.medium,
-//                    elevation = ButtonDefaults.buttonElevation(defaultElevation = 4.dp) // Add elevation
+                    shape = MaterialTheme.shapes.medium
                 ) {
                     Text(
                         text = "Doctor",
-//                        style = MaterialTheme.typography.labelLarge
+                        style = MaterialTheme.typography.labelLarge
                     )
                 }
             }
         }
     }
 }
+
 
 @Preview(showBackground = true)
 @Composable

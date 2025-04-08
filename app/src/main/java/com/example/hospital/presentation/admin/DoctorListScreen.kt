@@ -26,29 +26,36 @@ fun DoctorListScreen(
     navController: NavController,
     viewModel: DoctorViewModel = viewModel()
 ) {
+    // Collect the doctors state from the ViewModel.
     val doctors by viewModel.doctors.collectAsState()
 
-    // fetch doctors by provided Firestore document IDs
+    // Fetch doctors when the list of IDs changes.
     LaunchedEffect(doctorIds) {
         viewModel.fetchDoctorsBySpecialization(doctorIds)
     }
 
     Scaffold(
         topBar = {
-            TopAppBar(title = { Text("Doctors - $specialization") })
+            TopAppBar(
+                title = { Text("Doctors - $specialization") },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                )
+            )
         }
-    ) { padding ->
+    ) { innerPadding ->
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(padding)
-                .padding(16.dp)
+                .padding(innerPadding)
+                .padding(horizontal = 16.dp, vertical = 8.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             items(doctors) { doctor ->
                 DoctorCard(doctor = doctor) {
                     navController.navigate("doctor_preview/${doctor.id}")
                 }
-                Spacer(modifier = Modifier.height(12.dp))
             }
         }
     }
@@ -61,18 +68,31 @@ fun DoctorCard(doctor: Doctor, onClick: () -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .clickable { onClick() },
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        shape = MaterialTheme.shapes.medium,
+        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Text("👨‍⚕️ Dr. ${doctor.name}", style = MaterialTheme.typography.titleMedium)
+            Text(
+                text = "👨‍⚕️ Dr. ${doctor.name}",
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.primary
+            )
+            // You can add additional details below if desired:
+            // For example:
+            // Text(text = doctor.specialization, style = MaterialTheme.typography.bodySmall)
         }
     }
 }
-
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Preview(showSystemUi = true)
 @Composable
 fun PreviewDoctorList() {
-    DoctorListScreen("Dermatologist", listOf(), rememberNavController())
+    // Provide dummy or empty list for preview.
+    DoctorListScreen(
+        specialization = "Dermatologist",
+        doctorIds = emptyList(),
+        navController = rememberNavController()
+    )
 }

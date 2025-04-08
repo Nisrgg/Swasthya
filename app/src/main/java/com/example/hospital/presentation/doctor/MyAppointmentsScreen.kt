@@ -6,12 +6,14 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
+import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.example.hospital.core.theme.HospitalCard
 import com.example.hospital.data.models.Appointment
 import com.example.hospital.data.viewmodels.DoctorViewModel
 import java.text.SimpleDateFormat
@@ -25,17 +27,21 @@ fun MyAppointmentsScreen(
     doctorId: String,
     viewModel: DoctorViewModel
 ) {
-    val allAppointments by viewModel.appointments.collectAsState()
-    val weeklyAppointments by viewModel.upcomingAppointments.collectAsState()
+    // Collect appointments state with default empty lists for safety.
+    val allAppointments by viewModel.appointments.collectAsState(initial = emptyList())
+    val weeklyAppointments by viewModel.upcomingAppointments.collectAsState(initial = emptyList())
 
+    // Use a TabRow for the tab navigation
     var selectedTab by remember { mutableIntStateOf(0) }
+    val tabs = listOf("Today", "Upcoming", "All")
 
-    // Load data
+    // Load data when the doctorId changes.
     LaunchedEffect(doctorId) {
         viewModel.loadAppointments(doctorId)
         viewModel.loadUpcomingAppointments(doctorId)
     }
 
+    // Prepare date filtering.
     val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
     val today = dateFormat.format(Date())
 
@@ -52,29 +58,34 @@ fun MyAppointmentsScreen(
                 upcomingWeekAppointments.none { wa -> wa.id == it.id }
     }
 
-
-    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-
-        // Top Tabs
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceEvenly
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    ) {
+        // Tabs using Material3 TabRow
+        TabRow(
+            selectedTabIndex = selectedTab,
+            containerColor = MaterialTheme.colorScheme.surface,
+            indicator = { tabPositions ->
+                TabRowDefaults.Indicator(
+                    Modifier.tabIndicatorOffset(tabPositions[selectedTab]),
+                    color = MaterialTheme.colorScheme.primary
+                )
+            }
         ) {
-            val tabs = listOf("Today", "Upcoming", "All")
             tabs.forEachIndexed { index, title ->
-                Button(
+                Tab(
+                    selected = selectedTab == index,
                     onClick = { selectedTab = index },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = if (selectedTab == index) MaterialTheme.colorScheme.primary else Color.LightGray
-                    )
-                ) {
-                    Text(text = title, color = Color.White)
-                }
+                    text = { Text(title) }
+                )
             }
         }
 
         Spacer(modifier = Modifier.height(16.dp))
 
+        // Choose list based on the selected tab
         val list = when (selectedTab) {
             0 -> todaysAppointments
             1 -> upcomingWeekAppointments
@@ -82,15 +93,23 @@ fun MyAppointmentsScreen(
         }
 
         if (list.isEmpty()) {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text("No appointments found.")
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "No appointments found.",
+                    style = MaterialTheme.typography.bodyLarge
+                )
             }
         } else {
-            LazyColumn {
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
                 items(list) { appointmentWithId ->
-                    AppointmentCard(appointmentWithId.data)
+                    AppointmentCard(appointment = appointmentWithId.data)
                 }
-
             }
         }
     }
@@ -98,17 +117,21 @@ fun MyAppointmentsScreen(
 
 @Composable
 fun AppointmentCard(appointment: Appointment) {
-    Card(
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+    // Using your custom HospitalCard for consistent styling.
+    HospitalCard(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 8.dp)
+            .padding(vertical = 4.dp)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Text("Patient ID: ${appointment.patient_id}", fontWeight = FontWeight.Bold)
-            Text("Date: ${appointment.appointment_date}")
-            Text("Slot: ${appointment.slot}")
-            Text("Status: ${appointment.status}")
+            Text(
+                text = "Patient ID: ${appointment.patient_id}",
+                style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold)
+            )
+            Text(text = "Date: ${appointment.appointment_date}")
+            Text(text = "Slot: ${appointment.slot}")
+            Text(text = "Status: ${appointment.status}")
         }
     }
 }
+

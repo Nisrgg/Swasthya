@@ -26,12 +26,21 @@ import com.google.firebase.auth.FirebaseAuth
 @Composable
 fun DoctorHomeScreen(
     doctorId: String,
-    navController: NavController)
-{
+    navController: NavController
+) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Doctor Dashboard") },
+                title = {
+                    Text(
+                        "Doctor Dashboard",
+                        style = MaterialTheme.typography.titleLarge,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer
+                ),
                 actions = {
                     IconButton(onClick = {
                         FirebaseAuth.getInstance().signOut()
@@ -41,7 +50,8 @@ fun DoctorHomeScreen(
                     }) {
                         Icon(
                             imageVector = Icons.Default.Logout,
-                            contentDescription = "Logout"
+                            contentDescription = "Logout",
+                            tint = MaterialTheme.colorScheme.onPrimaryContainer
                         )
                     }
                 }
@@ -52,90 +62,63 @@ fun DoctorHomeScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .padding(24.dp)
-                .verticalScroll(rememberScrollState()), // ✅ Makes it scrollable
-            verticalArrangement = Arrangement.spacedBy(16.dp),
+                .padding(horizontal = 20.dp, vertical = 16.dp)
+                .verticalScroll(rememberScrollState()),
+            verticalArrangement = Arrangement.spacedBy(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+
             Text(
-                text = "Welcome, Doctor",
+                text = "Welcome Back, Doctor 👨‍⚕️",
                 style = MaterialTheme.typography.headlineSmall,
                 color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.padding(top = 12.dp),
                 textAlign = TextAlign.Center
             )
 
-            Spacer(modifier = Modifier.height(32.dp))
-
-            HospitalCard(
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                    SectionTitle("Your Daily Operations")
-                    PrimaryButton(
-                        text = "View Appointments",
-                        onClick = { navController.navigate("all_appointments/$doctorId") },
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                    PrimaryButton(
-                        text = "Write Prescriptions",
-                        onClick = { /*navController.navigate("write_prescription")*/ },
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                }
-            }
-
-            HospitalCard(
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                    SectionTitle("More Options")
-                    PrimaryButton(
-                        text = "Request Leave",
-                        onClick = { navController.navigate("leave_request/$doctorId") },
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                    PrimaryButton(
-                        text = "Reschedule Appointments",
-                        onClick = { navController.navigate("reschedule_appointment/$doctorId") },
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                }
-            }
-        }
-    }
-}
-
-
-@Composable
-private fun QuickActionButton(
-    icon: androidx.compose.ui.graphics.vector.ImageVector,
-    text: String,
-    onClick: () -> Unit
-) {
-    ElevatedCard(
-        onClick = onClick,
-        colors = CardDefaults.elevatedCardColors(
-            containerColor = MaterialTheme.colorScheme.secondaryContainer
-        ),
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        Row(
-            modifier = Modifier
-                .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(
-                imageVector = icon,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.onSecondaryContainer,
-                modifier = Modifier.size(28.dp)
-            )
-            Spacer(modifier = Modifier.width(16.dp))
             Text(
-                text = text,
+                text = "Here’s your quick access panel.",
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSecondaryContainer
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                textAlign = TextAlign.Center
             )
+
+            HospitalCard {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(20.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    SectionTitle("Daily Tools")
+
+                    PrimaryButton(
+                        text = "🗓️ View Appointments",
+                        onClick = { navController.navigate("all_appointments/$doctorId") }
+                    )
+                }
+            }
+
+            HospitalCard {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(20.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    SectionTitle("Other Options")
+
+                    PrimaryButton(
+                        text = "📅 Request Leave",
+                        onClick = { navController.navigate("leave_request/$doctorId") }
+                    )
+
+                    PrimaryButton(
+                        text = "🔁 Reschedule Appointments",
+                        onClick = { navController.navigate("reschedule_appointment/$doctorId") }
+                    )
+                }
+            }
         }
     }
 }

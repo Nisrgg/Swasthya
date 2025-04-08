@@ -4,27 +4,38 @@ import com.example.hospital.data.models.UserProfile
 import com.google.firebase.firestore.FirebaseFirestore
 
 class UserRepository {
-    private val db = FirebaseFirestore.getInstance()
 
-    fun saveUserProfile(profile: UserProfile, onResult: (Boolean) -> Unit) {
-        db.collection("users").document(profile.user_id)
-            .set(profile)
+    private val db = FirebaseFirestore.getInstance()
+    private val usersCollection = db.collection("users")
+
+    fun saveUserProfile(uid: String, profile: UserProfile, onResult: (Boolean) -> Unit) {
+        usersCollection.document(uid).set(profile)
             .addOnSuccessListener { onResult(true) }
             .addOnFailureListener { onResult(false) }
     }
 
-    fun fetchUserProfile(userId: String, onResult: (UserProfile?) -> Unit) {
-        db.collection("users").document(userId)
-            .get()
-            .addOnSuccessListener { doc ->
-                if (doc.exists()) {
-                    onResult(doc.toObject(UserProfile::class.java))
+    fun getUserProfile(uid: String, onResult: (UserProfile?) -> Unit) {
+        usersCollection.document(uid).get()
+            .addOnSuccessListener { document ->
+                if (document.exists()) {
+                    val profile = document.toObject(UserProfile::class.java)
+                    onResult(profile)
                 } else {
                     onResult(null)
                 }
             }
             .addOnFailureListener {
                 onResult(null)
+            }
+    }
+
+    fun doesUserProfileExist(uid: String, onResult: (Boolean) -> Unit) {
+        usersCollection.document(uid).get()
+            .addOnSuccessListener { document ->
+                onResult(document.exists())
+            }
+            .addOnFailureListener {
+                onResult(false)
             }
     }
 }

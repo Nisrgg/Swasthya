@@ -1,122 +1,72 @@
 package com.example.hospital.presentation.doctor
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.*
-import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.hospital.googleSignIn.loginDoctor
-import androidx.compose.ui.platform.LocalAutofill
-import androidx.compose.ui.platform.LocalAutofillTree
-import androidx.compose.ui.autofill.*
-import androidx.compose.ui.layout.boundsInWindow
-import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.unit.sp
-import androidx.compose.ui.text.font.FontWeight
-//import androidx.compose.ui.platform.LocalDensity
+import com.example.hospital.core.theme.HospitalTextField
+import com.example.hospital.core.theme.PrimaryButton
+import com.example.hospital.core.theme.SectionTitle
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun DoctorLoginScreen(navController: NavController) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var loading by remember { mutableStateOf(false) }
 
-    val autofill = LocalAutofill.current
-    val autofillTree = LocalAutofillTree.current
-//    val density = LocalDensity.current
-
-    val emailNode = remember {
-        AutofillNode(
-            onFill = { email = it },
-            autofillTypes = listOf(AutofillType.EmailAddress)
-        )
-    }
-    val passwordNode = remember {
-        AutofillNode(
-            onFill = { password = it },
-            autofillTypes = listOf(AutofillType.Password)
-        )
-    }
-
-    // Registering AutofillNodes
-    DisposableEffect(Unit) {
-        autofillTree += emailNode
-        autofillTree += passwordNode
-        onDispose {
-            autofillTree += emailNode
-            autofillTree += passwordNode
-        }
-    }
-
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(24.dp),
-        verticalArrangement = Arrangement.Center
+            .padding(horizontal = 24.dp, vertical = 40.dp),
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(
-            text = "Doctor Login",
-            style = MaterialTheme.typography.headlineMedium.copy(
-                fontWeight = FontWeight.Bold,
-                fontSize = 28.sp
-            )
-        )
+        SectionTitle(title = "Doctor Login")
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        OutlinedTextField(
+        HospitalTextField(
             value = email,
             onValueChange = { email = it },
-            label = { Text("Email") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-            modifier = Modifier
-                .fillMaxWidth()
-                .onGloballyPositioned { coordinates ->
-                    val bounds = coordinates.boundsInWindow()
-                    emailNode.boundingBox = bounds
-                    autofill?.requestAutofillForNode(emailNode)
-                }
+            label = "Email"
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        OutlinedTextField(
+        HospitalTextField(
             value = password,
             onValueChange = { password = it },
-            label = { Text("Password") },
-            visualTransformation = PasswordVisualTransformation(),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-            modifier = Modifier
-                .fillMaxWidth()
-                .onGloballyPositioned { coordinates ->
-                    val bounds = coordinates.boundsInWindow()
-                    passwordNode.boundingBox = bounds
-                    autofill?.requestAutofillForNode(passwordNode)
-                }
+            label = "Password"
         )
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        Button(
+        PrimaryButton(
+            text = if (loading) "Logging in..." else "Login",
             onClick = {
                 loading = true
                 loginDoctor(email, password, navController) {
                     loading = false
                 }
             },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text(text = "Login")
-        }
+            enabled = !loading
+        )
 
         if (loading) {
             Spacer(modifier = Modifier.height(16.dp))
-            CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
+            CircularProgressIndicator()
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun DoctorLoginPreview(){
+    DoctorLoginScreen(rememberNavController())
 }

@@ -2,6 +2,7 @@ package com.example.hospital.presentation.patient
 
 import android.app.DatePickerDialog
 import android.os.Build
+import android.util.Log
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
@@ -23,13 +24,15 @@ import androidx.navigation.compose.rememberNavController
 import com.example.hospital.data.models.Appointment
 import com.example.hospital.data.repositories.AppointmentRepository
 import com.example.hospital.data.viewmodels.DoctorViewModel
-import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import java.time.LocalDate
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.*
-import android.util.Log;
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import com.example.hospital.core.theme.HospitalTheme
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
@@ -46,55 +49,53 @@ fun DoctorPreviewScreen(
     val doctor = viewModel.selectedDoctor.value
     val context = LocalContext.current
 
+    // Fetch doctor details on launch.
     LaunchedEffect(doctorId) {
         viewModel.fetchDoctorById(doctorId)
     }
 
     Scaffold(
         topBar = {
-            TopAppBar(title = {
-                Text(doctor?.name ?: "Doctor Details")
-            })
+            TopAppBar(
+                title = { Text(doctor?.name ?: "Doctor Details", style = MaterialTheme.typography.titleLarge) }
+            )
         }
     ) { padding ->
-        doctor?.let { it ->
-            val dayOfWeek = selectedDate.dayOfWeek.name.lowercase()
-                .replaceFirstChar { it.uppercase() }
-
-            val slots = it.available_slots[dayOfWeek] ?: emptyList()
+        doctor?.let { doc ->
+            // Display the selected date's day name.
+            val dayOfWeek = selectedDate.dayOfWeek.name.lowercase().replaceFirstChar { it.uppercase() }
+            // Retrieve available slots for that day.
+            val slots = doc.available_slots[dayOfWeek] ?: emptyList()
 
             Column(
                 modifier = Modifier
                     .padding(padding)
                     .padding(16.dp)
-                    .verticalScroll(rememberScrollState())
+                    .verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(20.dp)
             ) {
-                Text("Name: ${it.name}", style = MaterialTheme.typography.titleLarge)
-                Text("Specialization: ${it.specialization}")
-                Text("Experience: ${it.experience} years")
-                Text("Education: ${it.education}")
-                Text("Contact: ${it.phone}")
-                Text("Email: ${it.email}")
-                Text("Gender: ${it.gender}")
-                Text("Age: ${it.age}")
+                // Doctor details
+                Text("Name: ${doc.name}", style = MaterialTheme.typography.titleLarge)
+                Text("Specialization: ${doc.specialization}", style = MaterialTheme.typography.bodyLarge)
+                Text("Experience: ${doc.experience} years", style = MaterialTheme.typography.bodyLarge)
+                Text("Education: ${doc.education}", style = MaterialTheme.typography.bodyLarge)
+                Text("Contact: ${doc.phone}", style = MaterialTheme.typography.bodyLarge)
+                Text("Email: ${doc.email}", style = MaterialTheme.typography.bodyLarge)
+                Text("Gender: ${doc.gender}", style = MaterialTheme.typography.bodyLarge)
+                Text("Age: ${doc.age}", style = MaterialTheme.typography.bodyLarge)
 
                 Spacer(modifier = Modifier.height(24.dp))
 
+                // Weekly Availability
                 Text("Weekly Availability:", style = MaterialTheme.typography.titleMedium)
-
-                val weekDays = listOf(
-                    "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"
-                )
-
-                val availableSlotsSorted = doctor.available_slots
+                val weekDays = listOf("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")
+                val availableSlotsSorted = doc.available_slots
                     .filter { it.value.isNotEmpty() }
-                    .toSortedMap(compareBy { day ->
-                        weekDays.indexOf(day.replaceFirstChar { it.uppercase() })
-                    })
+                    .toSortedMap(compareBy { day -> weekDays.indexOf(day.replaceFirstChar { it.uppercase() }) })
 
                 if (availableSlotsSorted.isNotEmpty()) {
                     Column(modifier = Modifier.padding(top = 8.dp)) {
-                        availableSlotsSorted.forEach { (day, slots) ->
+                        availableSlotsSorted.forEach { (day, _) ->
                             Text("✅ ${day.replaceFirstChar { it.uppercase() }}", style = MaterialTheme.typography.bodyMedium)
                         }
                     }
@@ -102,10 +103,9 @@ fun DoctorPreviewScreen(
                     Text("No weekly availability set.", style = MaterialTheme.typography.bodySmall)
                 }
 
-
-
                 Spacer(modifier = Modifier.height(24.dp))
 
+                // Date Picker
                 Text("Choose a date:", style = MaterialTheme.typography.titleMedium)
                 DatePicker(selectedDate) { newDate ->
                     selectedDate = newDate
@@ -114,6 +114,7 @@ fun DoctorPreviewScreen(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
+                // Available Slots for Selected Day
                 Text("Available Slots on $dayOfWeek", style = MaterialTheme.typography.titleMedium)
                 if (slots.isNotEmpty()) {
                     FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -128,43 +129,42 @@ fun DoctorPreviewScreen(
 
                     selectedSlot?.let { slot ->
                         Spacer(modifier = Modifier.height(16.dp))
+                        Button(
+                            onClick = {
+                                Log.d("SlotCheck", "Selected slot: $slot")
+                                val timestamp = parseTimeToTimestamp(selectedDate, slot)
+                                val patientId = FirebaseAuth.getInstance().currentUser?.uid
+                                Log.d("FirebaseCheck", "Patient ID: $patientId")
 
-                        Button(onClick = {
-                            Log.d("SlotCheck", "Selected slot: $slot")
+                                if (timestamp != null && patientId != null) {
+                                    val appointment = Appointment(
+                                        appointment_date = timestamp,
+                                        doctor_id = doctorId,
+                                        patient_id = patientId,
+                                        prescription = "",
+                                        slot = slot,
+                                        status = "confirmed"
+                                    )
 
-                            val timestamp = parseTimeToTimestamp(selectedDate, slot)
-
-                            val patientId = FirebaseAuth.getInstance().currentUser?.uid
-                            Log.d("FirebaseCheck", "Patient ID: $patientId")
-
-
-                            if (timestamp != null &&  patientId != null) {
-                                val appointment = Appointment(
-                                    appointment_date = timestamp,
-                                    doctor_id = doctorId,
-                                    patient_id = patientId,
-                                    prescription = "",
-                                    slot = slot,
-                                    status = "confirmed"
-                                )
-
-                                appointmentRepo.bookAppointment(appointment) { success ->
-                                    if (success) {
-                                        Toast.makeText(context, "Appointment booked!", Toast.LENGTH_SHORT).show()
-                                        navController.navigate("dashboard")
-                                    } else {
-                                        Toast.makeText(context, "Booking failed. Try again.", Toast.LENGTH_SHORT).show()
+                                    appointmentRepo.bookAppointment(appointment) { success ->
+                                        if (success) {
+                                            Toast.makeText(context, "Appointment booked!", Toast.LENGTH_SHORT).show()
+                                            navController.navigate("dashboard")
+                                        } else {
+                                            Toast.makeText(context, "Booking failed. Try again.", Toast.LENGTH_SHORT).show()
+                                        }
                                     }
+                                } else {
+                                    Toast.makeText(context, "Error parsing time or user not logged in", Toast.LENGTH_SHORT).show()
                                 }
-                            } else {
-                                Toast.makeText(context, "Error parsing time or user not logged in", Toast.LENGTH_SHORT).show()
-                            }
-                        }) {
+                            },
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
                             Text("Book Appointment at $slot")
                         }
                     }
                 } else {
-                    Text("No slots available.")
+                    Text("No slots available.", style = MaterialTheme.typography.bodyMedium)
                 }
             }
         } ?: Box(
@@ -180,14 +180,13 @@ fun DoctorPreviewScreen(
 
 @Composable
 fun SelectableChip(label: String, isSelected: Boolean, onClick: () -> Unit) {
-    val backgroundColor =
-        if (isSelected) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.primary
+    val backgroundColor = if (isSelected) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.primary
     Box(
         modifier = Modifier
             .padding(4.dp)
             .background(backgroundColor, shape = RoundedCornerShape(16.dp))
-            .padding(horizontal = 12.dp, vertical = 6.dp)
             .clickable { onClick() }
+            .padding(horizontal = 12.dp, vertical = 6.dp)
     ) {
         Text(text = label, color = Color.White)
     }
@@ -215,16 +214,33 @@ fun DatePicker(selectedDate: LocalDate, onDateChange: (LocalDate) -> Unit) {
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
-fun parseTimeToTimestamp(date: LocalDate, timeStr: String): Timestamp? {
+fun parseTimeToTimestamp(date: LocalDate, timeStr: String): com.google.firebase.Timestamp? {
     return try {
-        val formatter = DateTimeFormatter.ofPattern("hh:mm a", Locale.ENGLISH) // 👈 use ENGLISH
+        val formatter = DateTimeFormatter.ofPattern("hh:mm a", Locale.ENGLISH)
         val time = java.time.LocalTime.parse(timeStr.trim(), formatter)
         val dateTime = date.atTime(time)
         val instant = dateTime.atZone(ZoneId.systemDefault()).toInstant()
-        Timestamp(Date.from(instant))
+        com.google.firebase.Timestamp(Date.from(instant))
     } catch (e: Exception) {
         e.printStackTrace()
         Log.e("TimeParseError", "Failed to parse time: '$timeStr'")
         null
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+@Preview(showBackground = true)
+@Composable
+fun DoctorPreviewScreenPreview() {
+    // Create a dummy NavController for preview purposes.
+    val navController = rememberNavController()
+
+    // In preview, you might want to show a loading indicator or dummy data.
+    // For simplicity, if no doctor is loaded, the CircularProgressIndicator will be shown.
+    HospitalTheme {
+        DoctorPreviewScreen(
+            doctorId = "dummyDoctorId",
+            navController = navController
+        )
     }
 }

@@ -1,102 +1,104 @@
 package com.example.hospital.presentation.admin
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.hospital.data.models.UserProfile
-import com.example.hospital.data.viewmodels.UserProfileViewModel
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-
+import com.example.hospital.data.models.UserProfile
+import com.example.hospital.data.viewmodels.UserProfileViewModel
 
 @Composable
 fun OnboardingScreen(
     userId: String,
     navController: NavController,
     viewModel: UserProfileViewModel = viewModel(),
-    onComplete: () -> Unit
+    existingProfile: UserProfile? = null,
+    onProfileSaved: () -> Unit
 ) {
-    var name by remember { mutableStateOf("") }
-    var age by remember { mutableStateOf("") }
-    var height by remember { mutableStateOf("") }
-    var weight by remember { mutableStateOf("") }
-    var bloodGroup by remember { mutableStateOf("") }
+    var name by remember { mutableStateOf(existingProfile?.name ?: "") }
+    var age by remember { mutableStateOf(existingProfile?.age?.toString() ?: "") }
+    var height by remember { mutableStateOf(existingProfile?.height?.toString() ?: "") }
+    var weight by remember { mutableStateOf(existingProfile?.weight?.toString() ?: "") }
+    var bloodGroup by remember { mutableStateOf(existingProfile?.blood_group ?: "") }
+    var hasFamilyHistory by remember { mutableStateOf(existingProfile?.has_family_history ?: false) }
+    var familyDetails by remember { mutableStateOf(existingProfile?.family_history_details ?: "") }
+    var hasAllergies by remember { mutableStateOf(existingProfile?.has_allergies ?: false) }
+    var allergyDetails by remember { mutableStateOf(existingProfile?.allergy_details ?: "") }
+    var hasMedications by remember { mutableStateOf(existingProfile?.has_medications ?: false) }
+    var medicationDetails by remember { mutableStateOf(existingProfile?.medication_details ?: "") }
 
-    var hasFamilyHistory by remember { mutableStateOf(false) }
-    var familyHistoryDetails by remember { mutableStateOf("") }
-
-    var hasAllergies by remember { mutableStateOf(false) }
-    var allergyDetails by remember { mutableStateOf("") }
-
-    var hasMedications by remember { mutableStateOf(false) }
-    var medicationDetails by remember { mutableStateOf("") }
-
-    val bloodGroups = listOf("A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-")
-
-    Column(Modifier.padding(16.dp).verticalScroll(rememberScrollState())) {
-        Text("Create Profile", style = MaterialTheme.typography.headlineSmall)
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+            .verticalScroll(rememberScrollState())
+    ) {
+        Text("${if (existingProfile == null) "Welcome! Let's build" else "Edit"} your profile", fontSize = 22.sp, fontWeight = FontWeight.Bold)
         Spacer(Modifier.height(16.dp))
 
         OutlinedTextField(value = name, onValueChange = { name = it }, label = { Text("Name") })
-        OutlinedTextField(value = age, onValueChange = { age = it }, label = { Text("Age") })
-        OutlinedTextField(value = height, onValueChange = { height = it }, label = { Text("Height (cm)") })
-        OutlinedTextField(value = weight, onValueChange = { weight = it }, label = { Text("Weight (kg)") })
+        OutlinedTextField(value = age, onValueChange = { age = it }, label = { Text("Age") }, keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number))
+        OutlinedTextField(value = height, onValueChange = { height = it }, label = { Text("Height (cm)") }, keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number))
+        OutlinedTextField(value = weight, onValueChange = { weight = it }, label = { Text("Weight (kg)") }, keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number))
+        OutlinedTextField(value = bloodGroup, onValueChange = { bloodGroup = it }, label = { Text("Blood Group") })
 
-        Spacer(Modifier.height(12.dp))
-        DropdownMenuBox(bloodGroups, selected = bloodGroup, label = "Blood Group") {
-            bloodGroup = it
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Checkbox(checked = hasFamilyHistory, onCheckedChange = { hasFamilyHistory = it })
+            Text("Family Medical History?")
+        }
+        if (hasFamilyHistory) {
+            OutlinedTextField(value = familyDetails, onValueChange = { familyDetails = it }, label = { Text("Details") })
         }
 
-        Spacer(Modifier.height(12.dp))
-        YesNoSection("Family Medical History?", hasFamilyHistory, onToggle = { hasFamilyHistory = it }) {
-            OutlinedTextField(value = familyHistoryDetails, onValueChange = { familyHistoryDetails = it }, label = { Text("Details") })
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Checkbox(checked = hasAllergies, onCheckedChange = { hasAllergies = it })
+            Text("Allergies?")
+        }
+        if (hasAllergies) {
+            OutlinedTextField(value = allergyDetails, onValueChange = { allergyDetails = it }, label = { Text("Details") })
         }
 
-        YesNoSection("Allergies?", hasAllergies, onToggle = { hasAllergies = it }) {
-            OutlinedTextField(value = allergyDetails, onValueChange = { allergyDetails = it }, label = { Text("Allergy Details") })
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Checkbox(checked = hasMedications, onCheckedChange = { hasMedications = it })
+            Text("Ongoing Medications?")
+        }
+        if (hasMedications) {
+            OutlinedTextField(value = medicationDetails, onValueChange = { medicationDetails = it }, label = { Text("Details") })
         }
 
-        YesNoSection("Ongoing Medications?", hasMedications, onToggle = { hasMedications = it }) {
-            OutlinedTextField(value = medicationDetails, onValueChange = { medicationDetails = it }, label = { Text("Medication Details") })
-        }
-
-        Spacer(Modifier.height(16.dp))
-        Button(onClick = {
-            val profile = UserProfile(
-                user_id = userId,
-                name = name,
-                age = age,
-                height = height,
-                weight = weight,
-                blood_group = bloodGroup,
-                family_medical_history = if (hasFamilyHistory) "Yes: $familyHistoryDetails" else "No",
-                allergies = if (hasAllergies) "Yes: $allergyDetails" else "No",
-                ongoing_medications = if (hasMedications) "Yes: $medicationDetails" else "No"
-            )
-            viewModel.updateProfileField { profile }
-            viewModel.saveProfile {
-                if (it) onComplete()
-            }
-        }) {
-            Text("Save Profile")
+        Button(
+            onClick = {
+                val profile = UserProfile(
+                    name = name,
+                    age = age.toIntOrNull() ?: 0,
+                    height = height.toFloatOrNull() ?: 0f,
+                    weight = weight.toFloatOrNull() ?: 0f,
+                    blood_group = bloodGroup,
+                    has_family_history = hasFamilyHistory,
+                    family_history_details = familyDetails,
+                    has_allergies = hasAllergies,
+                    allergy_details = allergyDetails,
+                    has_medications = hasMedications,
+                    medication_details = medicationDetails
+                )
+                viewModel.saveUserProfile(userId, profile)
+                onProfileSaved()
+            },
+            modifier = Modifier.fillMaxWidth().padding(top = 20.dp)
+        ) {
+            Text("${if (existingProfile == null) "Submit" else "Update"} Profile")
         }
     }
 }
@@ -108,18 +110,28 @@ fun YesNoSection(
     onToggle: (Boolean) -> Unit,
     ifYesContent: @Composable () -> Unit
 ) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
-        Text(label, modifier = Modifier.weight(1f))
-        Switch(checked = checked, onCheckedChange = onToggle)
-    }
-    if (checked) {
-        Spacer(Modifier.height(8.dp))
-        ifYesContent()
+    Column {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(label, modifier = Modifier.weight(1f))
+            Switch(checked = checked, onCheckedChange = onToggle)
+        }
+        if (checked) {
+            Spacer(modifier = Modifier.height(8.dp))
+            ifYesContent()
+        }
     }
 }
 
 @Composable
-fun DropdownMenuBox(options: List<String>, selected: String, label: String, onSelected: (String) -> Unit) {
+fun DropdownMenuBox(
+    options: List<String>,
+    selected: String,
+    label: String,
+    onSelected: (String) -> Unit
+) {
     var expanded by remember { mutableStateOf(false) }
 
     Box {
@@ -137,11 +149,15 @@ fun DropdownMenuBox(options: List<String>, selected: String, label: String, onSe
         )
         DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
             options.forEach { option ->
-                DropdownMenuItem(text = { Text(option) }, onClick = {
-                    expanded = false
-                    onSelected(option)
-                })
+                DropdownMenuItem(
+                    text = { Text(option) },
+                    onClick = {
+                        expanded = false
+                        onSelected(option)
+                    }
+                )
             }
         }
     }
 }
+
