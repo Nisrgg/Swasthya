@@ -1,5 +1,6 @@
 package com.example.hospital.core
 
+import android.content.pm.PackageManager
 import  android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -21,6 +22,8 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
@@ -52,9 +55,12 @@ import com.example.hospital.presentation.doctor.DoctorHomeScreen
 import com.example.hospital.data.viewmodels.DoctorViewModel
 import com.example.hospital.data.viewmodels.LeaveRequestViewModel
 import com.example.hospital.presentation.doctor.LeaveRequestScreen
+import com.example.hospital.presentation.doctor.LeaveRequestsOverviewScreen
 import com.example.hospital.presentation.doctor.MyAppointmentsScreen
 import com.example.hospital.presentation.patient.UserProfileScreen
+import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
+
 
 
 class MainActivity : ComponentActivity() {
@@ -76,9 +82,21 @@ class MainActivity : ComponentActivity() {
         )
     }
 
-    @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
+    @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM) // Android 14
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS)
+                != PackageManager.PERMISSION_GRANTED
+            ) {
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(android.Manifest.permission.POST_NOTIFICATIONS),
+                    101
+                )
+            }
+        }
+        FirebaseApp.initializeApp(this)
         enableEdgeToEdge()
         setContent {
             HospitalTheme {
@@ -292,6 +310,17 @@ class MainActivity : ComponentActivity() {
                                 if (doctorId != null) {
                                     MyAppointmentsScreen(doctorId = doctorId, viewModel = viewModel)
                                 }
+                            }
+
+                            composable(
+                                route = Screen.LeaveOverviewScreen.route,
+                                arguments = listOf(navArgument("doctorId") { type = NavType.StringType })
+                            ) {backStackEntry ->
+                                val doctorId = backStackEntry.arguments?.getString("doctorId")!!
+                                LeaveRequestsOverviewScreen(
+                                    doctorId = doctorId,
+                                    onNewLeaveClick = { navController.navigate("leave_request/$doctorId") } // ✅ Now it's a function
+                                )
                             }
 
                             composable(Screen.LeaveScreen.route) { backStackEntry ->

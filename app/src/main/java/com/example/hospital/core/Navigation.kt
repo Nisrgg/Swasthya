@@ -23,6 +23,7 @@ sealed class Screen(val route: String) {
 
 
     object RescheduleScreen : Screen("reschedule_appointment/{doctorId}")
+    object LeaveOverviewScreen: Screen("all_leaves/{doctorId}")
     object LeaveScreen: Screen("leave_request/{doctorId}")
     object MyAppointment: Screen("all_appointments/{doctorId}")
 }

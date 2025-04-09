@@ -6,20 +6,19 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
+import androidx.compose.material3.TabRowDefaults.SecondaryIndicator
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.hospital.core.theme.HospitalCard
 import com.example.hospital.data.models.Appointment
 import com.example.hospital.data.viewmodels.DoctorViewModel
 import java.text.SimpleDateFormat
-import java.util.Date
+import java.util.*
 import java.util.Locale
-
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -27,48 +26,47 @@ fun MyAppointmentsScreen(
     doctorId: String,
     viewModel: DoctorViewModel
 ) {
-    // Collect appointments state with default empty lists for safety.
     val allAppointments by viewModel.appointments.collectAsState(initial = emptyList())
     val weeklyAppointments by viewModel.upcomingAppointments.collectAsState(initial = emptyList())
 
-    // Use a TabRow for the tab navigation
     var selectedTab by remember { mutableIntStateOf(0) }
-    val tabs = listOf("Today", "Upcoming", "All")
+    val tabs = listOf("Today", "Upcoming", "Past")
 
-    // Load data when the doctorId changes.
+    val statusOptions = listOf("All", "Pending", "Completed", "Cancelled","confirmed","rescheduled")
+    var selectedStatus by remember { mutableStateOf("All") }
+    var expanded by remember { mutableStateOf(false) }
+
+
     LaunchedEffect(doctorId) {
         viewModel.loadAppointments(doctorId)
         viewModel.loadUpcomingAppointments(doctorId)
     }
 
-    // Prepare date filtering.
     val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
     val today = dateFormat.format(Date())
 
-    val todaysAppointments = allAppointments.filter {
-        dateFormat.format(it.data.appointment_date.toDate()) == today
-    }
+    val todaysAppointments = allAppointments
+        .filter { dateFormat.format(it.data.appointment_date.toDate()) == today }
+        .sortedBy { it.data.appointment_date.toDate() }
 
-    val upcomingWeekAppointments = weeklyAppointments.filter {
-        dateFormat.format(it.data.appointment_date.toDate()) != today
-    }
+    val upcomingAppointments = weeklyAppointments
+        .filter { dateFormat.format(it.data.appointment_date.toDate()) > today }
+        .sortedBy { it.data.appointment_date.toDate() }
 
-    val allOtherAppointments = allAppointments.filter {
-        dateFormat.format(it.data.appointment_date.toDate()) != today &&
-                upcomingWeekAppointments.none { wa -> wa.id == it.id }
-    }
+    val pastAppointments = allAppointments
+        .filter { dateFormat.format(it.data.appointment_date.toDate()) < today }
+        .sortedByDescending { it.data.appointment_date.toDate() } // Past: latest first
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        // Tabs using Material3 TabRow
         TabRow(
             selectedTabIndex = selectedTab,
             containerColor = MaterialTheme.colorScheme.surface,
             indicator = { tabPositions ->
-                TabRowDefaults.Indicator(
+                SecondaryIndicator(
                     Modifier.tabIndicatorOffset(tabPositions[selectedTab]),
                     color = MaterialTheme.colorScheme.primary
                 )
@@ -83,13 +81,45 @@ fun MyAppointmentsScreen(
             }
         }
 
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Box(modifier = Modifier.fillMaxWidth()) {
+            OutlinedButton(
+                onClick = { expanded = true },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(text = "Status: $selectedStatus")
+            }
+
+            DropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { expanded = false }
+            ) {
+                statusOptions.forEach { status ->
+                    DropdownMenuItem(
+                        text = { Text(status) },
+                        onClick = {
+                            selectedStatus = status
+                            expanded = false
+                        }
+                    )
+                }
+            }
+        }
+
+
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Choose list based on the selected tab
-        val list = when (selectedTab) {
+        val rawList = when (selectedTab) {
             0 -> todaysAppointments
-            1 -> upcomingWeekAppointments
-            else -> allOtherAppointments
+            1 -> upcomingAppointments
+            2 -> pastAppointments
+            else -> emptyList()
+        }
+
+        // Apply status filter
+        val list = rawList.filter {
+            selectedStatus == "All" || it.data.status.equals(selectedStatus, ignoreCase = true)
         }
 
         if (list.isEmpty()) {
@@ -112,12 +142,19 @@ fun MyAppointmentsScreen(
                 }
             }
         }
+
+
     }
 }
 
 @Composable
 fun AppointmentCard(appointment: Appointment) {
-    // Using your custom HospitalCard for consistent styling.
+    // Convert timestamp to formatted date
+    val formattedDate = remember(appointment.appointment_date) {
+        val sdf = SimpleDateFormat("dd MMM yyyy, hh:mm a", Locale.getDefault())
+        sdf.format(appointment.appointment_date.toDate())
+    }
+
     HospitalCard(
         modifier = Modifier
             .fillMaxWidth()
@@ -125,13 +162,12 @@ fun AppointmentCard(appointment: Appointment) {
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(
-                text = "Patient ID: ${appointment.patient_id}",
+                text = "Patient Name: ${appointment.patient_name}",
                 style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold)
             )
-            Text(text = "Date: ${appointment.appointment_date}")
+            Text(text = "Date: $formattedDate")
             Text(text = "Slot: ${appointment.slot}")
             Text(text = "Status: ${appointment.status}")
         }
     }
 }
-

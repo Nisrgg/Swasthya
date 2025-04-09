@@ -110,7 +110,7 @@ fun DoctorHomeScreen(
 
                     PrimaryButton(
                         text = "📅 Request Leave",
-                        onClick = { navController.navigate("leave_request/$doctorId") }
+                        onClick = { navController.navigate("all_leaves/$doctorId") }
                     )
 
                     PrimaryButton(

@@ -4,5 +4,6 @@ data class LeaveRequest(
     val doctorId: String,
     val startDate: String,
     val endDate: String,
-    val reason: String
+    val reason: String,
+    val status: String = "pending" // default
 )

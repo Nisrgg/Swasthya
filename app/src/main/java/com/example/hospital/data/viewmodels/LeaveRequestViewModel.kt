@@ -8,10 +8,16 @@ import androidx.lifecycle.viewModelScope
 import com.example.hospital.data.models.LeaveRequest
 import com.example.hospital.data.repositories.LeaveRequestRepository
 import kotlinx.coroutines.launch
+import android.util.Log
+
 
 class LeaveRequestViewModel(
     private val repository: LeaveRequestRepository = LeaveRequestRepository()
 ) : ViewModel() {
+
+    var activeLeaveExists by mutableStateOf(false)
+    var leaveHistory by mutableStateOf(listOf<LeaveRequest>())
+        private set
 
     var startDate by mutableStateOf("")
     var endDate by mutableStateOf("")
@@ -36,6 +42,20 @@ class LeaveRequestViewModel(
             val result = repository.submitLeaveRequest(request)
             isSubmitting = false
             submitSuccess = result
+        }
+    }
+
+    fun loadLeaveHistory(doctorId: String) {
+        viewModelScope.launch {
+            val allRequests = repository.getDoctorLeaveRequests(doctorId)
+            leaveHistory = allRequests
+            activeLeaveExists = allRequests.any {
+                it.status == "pending" || it.status == "ongoing"
+            }
+            Log.d("LeaveFetch", "Doctor ID: $doctorId")
+
+            Log.d("LeaveRequestRepo", "Fetched ${leaveHistory.size} leave requests")
+
         }
     }
 }

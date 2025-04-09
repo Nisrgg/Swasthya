@@ -8,7 +8,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import java.util.*
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Text
 import androidx.compose.ui.tooling.preview.Preview
@@ -24,6 +23,10 @@ fun LeaveRequestScreen(
 ) {
     val context = LocalContext.current
 
+    LaunchedEffect(Unit) {
+        viewModel.loadLeaveHistory(doctorId)
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -35,6 +38,7 @@ fun LeaveRequestScreen(
             style = MaterialTheme.typography.headlineSmall,
             color = MaterialTheme.colorScheme.primary
         )
+
 
         HospitalTextField(
             value = viewModel.startDate,
@@ -54,10 +58,18 @@ fun LeaveRequestScreen(
             label = "Reason"
         )
 
+//        if (viewModel.activeLeaveExists) {
+//            Text(
+//                text = "You already have a pending or ongoing leave request.",
+//                color = MaterialTheme.colorScheme.error,
+//                style = MaterialTheme.typography.bodyMedium
+//            )
+//        }
+
         PrimaryButton(
             text = if (viewModel.isSubmitting) "Submitting..." else "Submit Leave Request",
             onClick = { viewModel.submitLeaveRequest(doctorId) },
-            enabled = !viewModel.isSubmitting
+            enabled = !viewModel.isSubmitting && !viewModel.activeLeaveExists
         )
 
         viewModel.submitSuccess?.let { success ->

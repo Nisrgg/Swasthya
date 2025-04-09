@@ -10,6 +10,7 @@ firebaseBom = "33.11.0"
 firebaseCore = "21.1.1"
 firebaseDatabaseVersion = "19.3.1"
 firebaseFirestoreKtxVersion = "24.4.1"
+firebaseMessaging = "24.1.1"
 firebaseStorage = "21.0.1"
 firebaseUiDatabase = "8.0.2"
 firebaseUiDatabaseVersion = "6.2.1"
@@ -64,6 +65,7 @@ firebase-core = { module = "com.google.firebase:firebase-core", version.ref = "f
 firebase-database-v1931 = { module = "com.google.firebase:firebase-database", version.ref = "firebaseDatabaseVersion" }
 firebase-dynamic-links-ktx = { module = "com.google.firebase:firebase-dynamic-links-ktx" }
 firebase-firestore-ktx-v2441 = { module = "com.google.firebase:firebase-firestore-ktx", version.ref = "firebaseFirestoreKtxVersion" }
+firebase-messaging = { module = "com.google.firebase:firebase-messaging", version.ref = "firebaseMessaging" }
 firebase-storage = { module = "com.google.firebase:firebase-storage", version.ref = "firebaseStorage" }
 firebase-storage-ktx = { module = "com.google.firebase:firebase-storage-ktx" }
 firebase-ui-database = { module = "com.firebaseui:firebase-ui-database", version.ref = "firebaseUiDatabase" }
