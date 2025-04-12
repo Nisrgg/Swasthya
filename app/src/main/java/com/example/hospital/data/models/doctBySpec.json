@@ -1,0 +1,37 @@
+{
+  "General Physician": "I4FJ1LoJVtQUP6Acmoj6hU54sBY2",
+
+  "Surgeon": "xg8uJ0loHrZBxGhAo11xoNFhP2y2",
+
+  "Dermatologist": [
+    "0KUtjnZ93wfpPbynyNrnKiYdbe33",
+    "hwR9UW5cNygfT8bKWIwJgnU3y0G2"
+  ],
+  "Cardiologist": [
+    "3gWRwM7DiSY4XaAnUTEVLb0XSHA2"
+  ],
+  "Gynecologist": [
+    "SInc5rmi6Le2z9PbbY9K5n7vKDm2"
+  ],
+  "Orthopedic Surgeon": [
+    "gpRPAINgjkhgxo0iKSxNF1zhpq03"
+  ],
+  "Pediatrician": [
+    "qB5yqor7TzVUpbHtlgUcDwgDPEt2"
+  ],
+  "Pulmonologist": [
+    "sUDEsntEdYcuMEJVlBHt7isBKrE2"
+  ],
+  "ENT Specialist": [
+    "6eCGuIAGmGPfq2l8ThxC42Yn6wg1"
+  ],
+  "Psychiatrist": [
+    "3LfwhPtcLbPi7ShCmz4nCf4Gi8P2"
+  ],
+  "Neurosurgeon": [
+    "huhHPDCkn2U6JkkCEq9aoVue9l42"
+  ],
+  "Pathologist": [
+    "vAVXtZjBviOVdsVlP7TodOnORmT2"
+  ]
+}

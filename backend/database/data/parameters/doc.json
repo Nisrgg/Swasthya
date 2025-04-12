@@ -1,0 +1,37 @@
+{
+    "doctors": [
+      {
+        "name": "Dr. Anjali Verma",
+        "email": "anjali@example.com",
+        "phone": "+911112223334",
+        "age": 40,
+        "gender": "Female",
+        "doc_details": {
+          "education": "MBBS, MD",
+          "specialization": "General Physician",
+          "experience": 12
+        },
+        "available_slots": {
+          "Monday": ["10:00 AM", "11:00 AM", "03:00 PM"],
+          "Wednesday": ["09:00 AM", "01:00 PM"]
+        }
+      },
+      {
+        "name": "Dr. Arjun Patel",
+        "email": "arjun@example.com",
+        "phone": "+919988776655",
+        "age": 38,
+        "gender": "Male",
+        "doc_details": {
+          "education": "MBBS, MS",
+          "specialization": "Surgeon",
+          "experience": 15
+        },
+        "available_slots": {
+          "Tuesday": ["11:00 AM", "12:00 PM", "04:00 PM"],
+          "Thursday": ["10:00 AM", "02:00 PM"]
+        }
+      }
+    ]
+  }
+  

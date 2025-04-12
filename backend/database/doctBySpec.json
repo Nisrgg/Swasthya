@@ -1,0 +1,78 @@
+{
+  "General Physician": [
+    {
+      "name": "Dr. Anjali Verma",
+      "email": "anjali@example.com"
+    }
+  ],
+  "Surgeon": [
+    {
+      "name": "Dr. Arjun Patel",
+      "email": "arjun@example.com"
+    }
+  ],
+  "Dermatologist": [
+    {
+      "name": "Dr. Meera Shah",
+      "email": "meera@example.com"
+    },
+    {
+      "name": "Dr. Pooja Desai",
+      "email": "pooja.desai@example.com"
+    }
+  ],
+  "Cardiologist": [
+    {
+      "name": "Dr. Ravi Shankar Iyer",
+      "email": "ravi.iyer@example.com"
+    }
+  ],
+  "Gynecologist": [
+    {
+      "name": "Dr. Nivedita Reddy",
+      "email": "nivedita.reddy@example.com"
+    }
+  ],
+  "Orthopedic Surgeon": [
+    {
+      "name": "Dr. Harshad Kulkarni",
+      "email": "harshad.k@example.com"
+    }
+  ],
+  "Pediatrician": [
+    {
+      "name": "Dr. Simran Kaur",
+      "email": "simran.kaur@example.com"
+    }
+  ],
+  "Pulmonologist": [
+    {
+      "name": "Dr. Tenzing Norbu",
+      "email": "tenzing.n@example.com"
+    }
+  ],
+  "ENT Specialist": [
+    {
+      "name": "Dr. Manpreet Singh",
+      "email": "manpreet.singh@example.com"
+    }
+  ],
+  "Psychiatrist": [
+    {
+      "name": "Dr. Aparna Das",
+      "email": "aparna.das@example.com"
+    }
+  ],
+  "Neurosurgeon": [
+    {
+      "name": "Dr. Irfan Qureshi",
+      "email": "irfan.qureshi@example.com"
+    }
+  ],
+  "Pathologist": [
+    {
+      "name": "Dr. Ayesha Khan",
+      "email": "ayesha.khan@example.com"
+    }
+  ]
+}

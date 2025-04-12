@@ -1,0 +1,18 @@
+{
+    "leave_requests": {
+      "req_1": {
+        "doctor_id": "doc_1",
+        "start_date": "2025-04-10",
+        "end_date": "2025-04-12",
+        "reason": "Family function",
+        "status": "pending"
+      },
+      "req_2": {
+        "doctor_id": "doc_2",
+        "start_date": "2025-04-15",
+        "end_date": "2025-04-16",
+        "reason": "Medical conference",
+        "status": "approved"
+      }
+    }
+}

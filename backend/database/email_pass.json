@@ -1,0 +1,53 @@
+[
+    { 
+      "email": "anjali@example.com",
+       "password": "password123" 
+      },
+    {
+       "email": "arjun@example.com", 
+       "password": "password123"
+       },
+    { 
+      "email": "meera@example.com", 
+      "password": "password123"
+     },
+    { 
+      "email": "ravi.iyer@example.com", 
+      "password": "password123" 
+    },
+    { 
+      "email": "nivedita.reddy@example.com",
+       "password": "password123" },
+    { 
+      "email": "simran.kaur@example.com", 
+      "password": "password123"
+     },
+    { 
+      "email": "harshad.k@example.com", 
+      "password": "password123" 
+    },
+    { 
+      "email": "tenzing.n@example.com", 
+      "password": "password123"
+     },
+    {
+       "email": "pooja.desai@example.com",
+        "password": "password123"
+       },
+    { 
+      "email": "manpreet.singh@example.com", 
+      "password": "password123"
+     },
+    {
+       "email": "aparna.das@example.com", 
+       "password": "password123" 
+      },
+    { 
+      "email": "irfan.qureshi@example.com", 
+      "password": "password123"
+     },
+    { 
+      "email": "ayesha.khan@example.com", 
+      "password": "password123"
+     }
+  ]  

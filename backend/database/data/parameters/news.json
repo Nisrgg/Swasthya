@@ -1,0 +1,14 @@
+{
+    "medical_news": {
+      "news_1": {
+        "headline": "Wearable Tech Can Predict Heart Attacks",
+        "content": "New wearables can detect early signs of heart failure before symptoms appear.",
+        "published_date": "2025-03-25"
+      },
+      "news_2": {
+        "headline": "Vitamin D Linked to Immunity Boost",
+        "content": "Studies show Vitamin D plays a key role in immune system support.",
+        "published_date": "2025-03-28"
+      }
+    }
+}

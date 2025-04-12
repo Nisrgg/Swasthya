@@ -98,9 +98,15 @@ dependencies {
     implementation(libs.firebase.core)
     implementation(libs.firebase.analytics)
 
+    implementation(libs.androidx.credentials)
+    implementation(libs.androidx.credentials.play.services.auth)
+
+    implementation(libs.firebase.messaging)
 
     implementation( libs.androidx.material.icons.extended)
 
+    implementation(libs.androidx.material3.v120) // or latest
+    implementation(libs.androidx.material)
 
     implementation(libs.material3)
     implementation(libs.ui.tooling.preview)

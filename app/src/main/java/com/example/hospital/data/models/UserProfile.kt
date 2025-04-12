@@ -1,17 +1,18 @@
 package com.example.hospital.data.models
 
+import java.io.Serializable
+
 data class UserProfile(
-    val userId: String = "",
-    val fullName: String = "",
-    val dateOfBirth: String = "",
-    val gender: String = "",
-    val phoneNumber: String = "",
-    val email: String = "",
-    val address: String = "",
-    val bloodGroup: String = "",
-    val emergencyContact: String = "",
-    val medicalConditions: String = "",
-    val allergies: String = "",               // ✅ New field for allergies
-    val pastSurgeries: String = "",           // ✅ New field for past surgeries
-    val medications: String = ""              // ✅ New field for ongoing medications
-)
+    val name: String = "",
+    val age: Int = 0,
+    val height: Float = 0f,
+    val weight: Float = 0f,
+    val blood_group: String = "",
+    val has_family_history: Boolean = false,
+    val family_history_details: String = "",
+    val has_allergies: Boolean = false,
+    val allergy_details: String = "",
+    val has_medications: Boolean = false,
+    val medication_details: String = ""
+) : Serializable
+

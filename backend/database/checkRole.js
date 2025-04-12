@@ -1,19 +1,32 @@
-const admin = require("firebase-admin");
+// const admin = require("firebase-admin");
 
-// Initialize Firebase Admin SDK
-const serviceAccount = require("./serviceAccountKey.json");
+// // Initialize Firebase Admin SDK
+// const serviceAccount = require("../../serviceAccountKey.json");
 
+// admin.initializeApp({
+//   credential: admin.credential.cert(serviceAccount)
+// });
+
+// // Replace with the correct UID of the doctor
+// const doctorUid = "vAVXtZjBviOVdsVlP7TodOnORmT2";
+
+// admin.auth().getUser(doctorUid)
+//   .then((userRecord) => {
+//     console.log("Custom Claims:", userRecord.customClaims);
+//   })
+//   .catch((error) => {
+//     console.log("Error fetching user data:", error);
+//   });
+
+
+  const admin = require("firebase-admin");
 admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount)
+  credential: admin.credential.cert(require("./serviceAccountKey.json"))
 });
 
-// Replace with the correct UID of the doctor
-const doctorUid = "LuChtCeP8VcbdXFwlKSPoYEZhVc2";
+async function checkClaims(email) {
+  const user = await admin.auth().getUserByEmail(email);
+  console.log(user.customClaims); // should show { role: "doctor", approved: true/false }
+}
 
-admin.auth().getUser(doctorUid)
-  .then((userRecord) => {
-    console.log("Custom Claims:", userRecord.customClaims);
-  })
-  .catch((error) => {
-    console.log("Error fetching user data:", error);
-  });
+checkClaims("ayesha.khan@example.com");
