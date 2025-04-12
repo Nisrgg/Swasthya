@@ -4,6 +4,7 @@
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
 
     <application
         android:allowBackup="true"
@@ -15,10 +16,29 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Hospital"
         tools:targetApi="tiramisu">
+
+        <service
+            android:name=".aws_sns.MyFirebaseMessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
         <activity
-            android:name=".MainActivity"
+            android:name=".core.MainActivity"
             android:exported="true"
             android:theme="@style/Theme.Hospital">
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="https"
+                    android:host="page.link"
+                    android:pathPrefix="/doctors" />
+            </intent-filter>
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

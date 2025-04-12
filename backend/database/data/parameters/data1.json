@@ -1,0 +1,159 @@
+{
+    "users": {
+      "user_1": {
+        "name": "John Doe",
+        "email": "john@example.com",
+        "phone": "+911234567890",
+        "age": 28,
+        "gender": "Male",
+        "height": 175,
+        "weight": 70,
+        "blood_group": "B+",
+        "medical_history": "Diabetes",
+        "family_history": "Heart disease",
+        "allergies": "Penicillin",
+        "ongoing_medications": "Metformin"
+      },
+      "user_2": {
+        "name": "Alice Smith",
+        "email": "alice@example.com",
+        "phone": "+919876543210",
+        "age": 32,
+        "gender": "Female",
+        "height": 160,
+        "weight": 58,
+        "blood_group": "A-",
+        "medical_history": "Asthma",
+        "family_history": "None",
+        "allergies": "Dust",
+        "ongoing_medications": "Inhaler"
+      },
+      "user_3": {
+        "name": "Raj Kumar",
+        "email": "raj@example.com",
+        "phone": "+918123456789",
+        "age": 24,
+        "gender": "Male",
+        "height": 170,
+        "weight": 65,
+        "blood_group": "O+",
+        "medical_history": "None",
+        "family_history": "Diabetes",
+        "allergies": "None",
+        "ongoing_medications": "None"
+      }
+    },
+  
+    "doctors": {
+      "doc_1": {
+        "name": "Dr. Anjali Verma",
+        "email": "anjali@example.com",
+        "phone": "+911112223334",
+        "age": 40,
+        "gender": "Female",
+        "doc_details": {
+          "education": "MBBS, MD",
+          "specialization": "General Physician",
+          "experience": 12
+        },
+        "available_slots": [
+          {
+            "day": "Monday",
+            "time_slots": ["10:00 AM", "11:00 AM", "03:00 PM"]
+          },
+          {
+            "day": "Wednesday",
+            "time_slots": ["09:00 AM", "01:00 PM"]
+          }
+        ]
+      },
+      "doc_2": {
+        "name": "Dr. Arjun Patel",
+        "email": "arjun@example.com",
+        "phone": "+919988776655",
+        "age": 38,
+        "gender": "Male",
+        "doc_details": {
+          "education": "MBBS, MS",
+          "specialization": "Surgeon",
+          "experience": 15
+        },
+        "available_slots": [
+          {
+            "day": "Tuesday",
+            "time_slots": ["11:00 AM", "12:00 PM", "04:00 PM"]
+          },
+          {
+            "day": "Thursday",
+            "time_slots": ["10:00 AM", "02:00 PM"]
+          }
+        ]
+      }
+    },
+  
+    "appointments": {
+      "appt_1": {
+        "patient_id": "user_1",
+        "doctor_id": "doc_1",
+        "appointment_date": "2025-04-06",
+        "slot": "10:00 AM",
+        "status": "pending",
+        "symptoms": "Fever and cold",
+        "prescription": "",
+        "meet_link": ""
+      },
+      "appt_2": {
+        "patient_id": "user_2",
+        "doctor_id": "doc_2",
+        "appointment_date": "2025-04-07",
+        "slot": "11:00 AM",
+        "status": "completed",
+        "symptoms": "Stomach pain",
+        "prescription": "Antacids and rest",
+        "meet_link": "https://meet.google.com/test-123"
+      }
+    },
+  
+    "doctor_unavailability": {
+      "doc_1": {
+        "doctor_id": "doc_1",
+        "start_date": "2025-04-10",
+        "end_date": "2025-04-12"
+      },
+      "doc_2": {
+        "doctor_id": "doc_2",
+        "start_date": "2025-04-15",
+        "end_date": "2025-04-16"
+      }
+    },
+  
+    "leave_requests": {
+      "req_1": {
+        "doctor_id": "doc_1",
+        "start_date": "2025-04-10",
+        "end_date": "2025-04-12",
+        "reason": "Family function",
+        "status": "pending"
+      },
+      "req_2": {
+        "doctor_id": "doc_2",
+        "start_date": "2025-04-15",
+        "end_date": "2025-04-16",
+        "reason": "Medical conference",
+        "status": "approved"
+      }
+    },
+  
+    "medical_news": {
+      "news_1": {
+        "headline": "Wearable Tech Can Predict Heart Attacks",
+        "content": "New wearables can detect early signs of heart failure before symptoms appear.",
+        "published_date": "2025-03-25"
+      },
+      "news_2": {
+        "headline": "Vitamin D Linked to Immunity Boost",
+        "content": "Studies show Vitamin D plays a key role in immune system support.",
+        "published_date": "2025-03-28"
+      }
+    }
+  }

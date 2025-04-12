@@ -1,0 +1,24 @@
+{
+    "appointments": {
+      "appt_1": {
+        "patient_id": "user_1",
+        "doctor_id": "doc_1",
+        "appointment_date": "2025-04-06",
+        "slot": "10:00 AM",
+        "status": "pending",
+        "symptoms": "Fever and cold",
+        "prescription": "",
+        "meet_link": ""
+      },
+      "appt_2": {
+        "patient_id": "user_2",
+        "doctor_id": "doc_2",
+        "appointment_date": "2025-04-07",
+        "slot": "11:00 AM",
+        "status": "completed",
+        "symptoms": "Stomach pain",
+        "prescription": "Antacids and rest",
+        "meet_link": "https://meet.google.com/test-123"
+      }
+    }
+}

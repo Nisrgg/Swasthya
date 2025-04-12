@@ -85,8 +85,28 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
 
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.dynamic.links.ktx)
+
+    // ✅ Other Firebase dependencies
+    implementation(libs.firebase.auth.ktx)
+    implementation(libs.google.firebase.firestore.ktx)
+    implementation(libs.firebase.analytics.ktx)
+    implementation(libs.firebase.storage.ktx)
+
+    implementation(libs.xdynamic.links)
+    implementation(libs.firebase.core)
+    implementation(libs.firebase.analytics)
+
+    implementation(libs.androidx.credentials)
+    implementation(libs.androidx.credentials.play.services.auth)
+
+    implementation(libs.firebase.messaging)
+
     implementation( libs.androidx.material.icons.extended)
 
+    implementation(libs.androidx.material3.v120) // or latest
+    implementation(libs.androidx.material)
 
     implementation(libs.material3)
     implementation(libs.ui.tooling.preview)

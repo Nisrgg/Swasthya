@@ -1,9 +1,14 @@
 package com.example.hospital.data.models
 
 data class Doctor(
-    val id: String = "",
+    var id: String = "",
     val name: String = "",
+    val email: String = "",
+    val phone: String = "",
+    val age: Int = 0,
+    val gender: String = "",
+    val education: String = "",
     val specialization: String = "",
-    val availableSlots: Map<String, List<String>> = emptyMap(), // ✅ Stores date-wise slots
-    val dateAdded: Long = System.currentTimeMillis()
+    val experience: Int = 0,
+    val available_slots: Map<String, List<String>> = emptyMap()
 )
