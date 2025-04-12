@@ -14,6 +14,9 @@
 .cxx
 local.properties
 *.zip
+backend
 /node_modules
+backend
 backend/database/serviceAccountKey.json
 backend/brevo-email/serviceAccountKey.json
+/.vscode
