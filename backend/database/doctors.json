@@ -1,0 +1,16 @@
+{ 
+  "doctors": {
+  "UID12345": {
+    "name": "Dr. Smith",
+    "age": 45,
+    "gender": "Male",
+    "specialization": "Cardiologist",
+    "experience": 15,
+    "phone": "+1234567890",
+    "available_slots": {
+      "Monday": ["10:00", "11:00"],
+      "Tuesday": ["14:00", "15:00"]
+    }
+  }
+}
+}

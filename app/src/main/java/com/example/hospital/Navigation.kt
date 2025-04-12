@@ -16,6 +16,9 @@ sealed class Screen(val route: String) {
         fun createRoute(doctorJson: String) = "bookAppointment/${Uri.encode(doctorJson)}"
     }
 
+    object DoctorLogin : Screen("doctor_login")
+//    object DoctorDashboard : Screen("doctor_dashboard")
+
     object ProfileScreen: Screen("profile")
     //object EditProfileScreen: Screen("edit_profile")
 

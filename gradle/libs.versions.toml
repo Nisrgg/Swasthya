@@ -4,6 +4,9 @@ agp = "8.9.1"
 coilCompose = "3.1.0"
 coilComposeVersion = "2.2.2"
 converterGson = "2.9.0"
+firebaseAnalytics = "22.4.0"
+firebaseBom = "33.11.0"
+firebaseCore = "21.1.1"
 firebaseDatabaseVersion = "19.3.1"
 firebaseFirestoreKtxVersion = "24.4.1"
 firebaseStorage = "21.0.1"
@@ -37,6 +40,7 @@ material = "1.12.0"
 composeMaterial = "1.4.1"
 firebaseFirestoreKtx = "25.1.2"
 datastoreCoreAndroid = "1.1.2"
+xdynamicLinks = "22.1.0"
 
 [libraries]
 accompanist-pager = { module = "com.google.accompanist:accompanist-pager", version.ref = "accompanistPager" }
@@ -45,14 +49,22 @@ androidx-material-icons-extended = { module = "androidx.compose.material:materia
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coilCompose" }
 coil-kt-coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilComposeVersion" }
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
+firebase-analytics = { module = "com.google.firebase:firebase-analytics", version.ref = "firebaseAnalytics" }
+firebase-analytics-ktx = { module = "com.google.firebase:firebase-analytics-ktx" }
+firebase-auth-ktx = { module = "com.google.firebase:firebase-auth-ktx" }
+firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
+firebase-core = { module = "com.google.firebase:firebase-core", version.ref = "firebaseCore" }
 firebase-database-v1931 = { module = "com.google.firebase:firebase-database", version.ref = "firebaseDatabaseVersion" }
+firebase-dynamic-links-ktx = { module = "com.google.firebase:firebase-dynamic-links-ktx" }
 firebase-firestore-ktx-v2441 = { module = "com.google.firebase:firebase-firestore-ktx", version.ref = "firebaseFirestoreKtxVersion" }
 firebase-storage = { module = "com.google.firebase:firebase-storage", version.ref = "firebaseStorage" }
+firebase-storage-ktx = { module = "com.google.firebase:firebase-storage-ktx" }
 firebase-ui-database = { module = "com.firebaseui:firebase-ui-database", version.ref = "firebaseUiDatabase" }
 firebase-ui-database-v621 = { module = "com.firebaseui:firebase-ui-database", version.ref = "firebaseUiDatabaseVersion" }
 generativeai-v040 = { module = "com.google.ai.client.generativeai:generativeai", version.ref = "generativeaiVersion" }
 glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
 glide-v370 = { module = "com.github.bumptech.glide:glide", version.ref = "glideVersion" }
+google-firebase-firestore-ktx = { module = "com.google.firebase:firebase-firestore-ktx" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
@@ -82,6 +94,7 @@ material = { group = "com.google.android.material", name = "material", version.r
 androidx-compose-material = { group = "androidx.wear.compose", name = "compose-material", version.ref = "composeMaterial" }
 firebase-firestore-ktx = { group = "com.google.firebase", name = "firebase-firestore-ktx", version.ref = "firebaseFirestoreKtx" }
 androidx-datastore-core-android = { group = "androidx.datastore", name = "datastore-core-android", version.ref = "datastoreCoreAndroid" }
+xdynamic-links = { module = "com.google.firebase:firebase-dynamic-links", version.ref = "xdynamicLinks" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

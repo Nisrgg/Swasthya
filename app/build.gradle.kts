@@ -85,6 +85,20 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
 
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.dynamic.links.ktx)
+
+    // ✅ Other Firebase dependencies
+    implementation(libs.firebase.auth.ktx)
+    implementation(libs.google.firebase.firestore.ktx)
+    implementation(libs.firebase.analytics.ktx)
+    implementation(libs.firebase.storage.ktx)
+
+    implementation(libs.xdynamic.links)
+    implementation(libs.firebase.core)
+    implementation(libs.firebase.analytics)
+
+
     implementation( libs.androidx.material.icons.extended)
 
 

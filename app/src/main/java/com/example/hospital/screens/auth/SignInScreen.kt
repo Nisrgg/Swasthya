@@ -106,7 +106,7 @@ fun SignInScreenUI(
 
                 // Admin Button
                 Button(
-                    onClick = { navController.navigate("admin_screen") },
+                    onClick = { navController.navigate("doctor_login") },
                     modifier = Modifier
                         .fillMaxWidth(0.3f)
                         .height(48.dp),

@@ -6,27 +6,33 @@ import com.google.firebase.firestore.FirebaseFirestore
 class DoctorRepository {
     private val db = FirebaseFirestore.getInstance()
 
-    fun addDoctor(
-        name: String,
-        specialization: String,
-        availableSlots: Map<String, List<String>>, // ✅ Accepts date-wise slots
-        onSuccess: () -> Unit,
-        onFailure: (Exception) -> Unit
-    ) {
-        val newDoctorRef = db.collection("doctors").document()
-
-        val doctor = Doctor(
-            id = newDoctorRef.id,
-            name = name,
-            specialization = specialization,
-            availableSlots = availableSlots // ✅ Stores in Firestore
-        )
-
-        newDoctorRef.set(doctor)
-            .addOnSuccessListener { onSuccess() }
-            .addOnFailureListener { onFailure(it) }
-    }
-
+//    // ✅ Add Doctor
+//    fun addDoctor(
+//        name: String,
+//        specialization: String,
+//        availableSlots: Map<String, List<String>>,
+//        experience: Int,
+//        education: String,
+//        onSuccess: () -> Unit,
+//        onFailure: (Exception) -> Unit
+//    ) {
+//        val newDoctorRef = db.collection("doctors").document()
+//
+//        val doctor = Doctor(
+//            id = newDoctorRef.id,
+//            name = name,
+//            specialization = specialization,
+//            availableSlots = availableSlots,
+//            experience = experience,
+//            education = education
+//        )
+//
+//        newDoctorRef.set(doctor)
+//            .addOnSuccessListener { onSuccess() }
+//            .addOnFailureListener { onFailure(it) }
+//    }
+//
+    // ✅ Remove Doctor
     fun removeDoctor(doctorId: String, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
         db.collection("doctors").document(doctorId)
             .delete()
@@ -34,6 +40,7 @@ class DoctorRepository {
             .addOnFailureListener { onFailure(it) }
     }
 
+    // ✅ Get All Doctors
     fun getDoctors(onSuccess: (List<Doctor>) -> Unit, onFailure: (Exception) -> Unit) {
         db.collection("doctors")
             .get()
@@ -46,4 +53,16 @@ class DoctorRepository {
             }
     }
 
+//    // ✅ Update Doctor Availability
+//    fun updateDoctorAvailability(
+//        doctorId: String,
+//        availableSlots: Map<String, List<String>>,
+//        onSuccess: () -> Unit,
+//        onFailure: (Exception) -> Unit
+//    ) {
+//        db.collection("doctors").document(doctorId)
+//            .update("availableSlots", availableSlots)
+//            .addOnSuccessListener { onSuccess() }
+//            .addOnFailureListener { onFailure(it) }
+//    }
 }
